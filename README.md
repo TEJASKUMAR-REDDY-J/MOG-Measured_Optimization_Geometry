@@ -16,26 +16,27 @@ The ladder is theory → measurement → oracle → proxy validation → online 
 
 ## Current status (2026-09-23)
 
-- **Stage 0 infrastructure only. No training has been run. No hypothesis has been tested.**
-- The geometry interface and five geometry families are implemented and unit-tested (89 tests).
-- The generic geometry optimizer matches reference Muon bit-for-bit.
-- The Exp 0 synthetic framework is implemented and smoke-tested, but has not yet been run at full size.
+**Experimental phase in progress.** Stages 0 and 2 are complete. Stage 3 (~0.8M-parameter transformer, CPU) is running. None of H1–H9 has been decided yet.
+
+| Stage | What | Status |
+|---|---|---|
+| 0 | Unit and mathematical tests | 94+ tests pass (incl. a bit-exact Muon equivalence) |
+| 0 | Exp 0: synthetic reproduction of PDF §4.3 and Figs 1–2 | **PASS**: every column within 2 seed-std of the PDF |
+| 2 | exp010: 14 optimizer arms on a 0.11M model | GO: all arms stable |
+| 2 | exp011/exp012: atlas and oracle pipeline pilots | GO: pipelines work (pilot numbers are not evidence) |
+| 3 | exp150 LR tuning → exp100 atlas → exp200 oracle → exp160 baselines → exp290/300 MOG arm | running |
 
 ### Verified findings
 
-These are unit-test or closed-form checks. None of them is a training result.
+These are synthetic or closed-form checks. None of them is a training result.
 
-- The PDF §4.3 closed-form columns reproduce: r_eff = 512 / 281.65 / 28.28 / 5.30, and full-spectral θ/C = 1.000 / 0.5501 / 0.0552 / 0.0104.
-- The LMO/duality identities, the C constants, and the Cauchy–Schwarz bound θ_c/C_c ≤ 1 hold for every implemented geometry.
+- PDF §4.3 reproduces. The closed-form columns match exactly, and the Monte Carlo columns fall within seed spread.
+- Muon's Newton–Schulz does **not** give the exact nuclear norm. The "free" dual-norm proxy is biased by −2% to −22% (512×512, 5 seeds). For low-rank momenta, the direction cosine to the exact $UV^\top$ drops to 0.63 at β=1.5.
 - The secant curvature estimate upper-bounds the directional Rayleigh quotient. It is not Prop. 1's sup-curvature (THEORY.md §5).
-- Reference checks: all 32 arXiv identifiers resolve. Two PDF claims are overstated or unverified: the Gluon venue and the boundary-layer attribution (THEORY.md §11).
+- Prior work exists. arXiv:2605.19781 already selects the per-layer LMO geometry from data, and arXiv:2608.02502 (CMuon) orthogonalizes in chunks. The PDF's novelty claims need narrowing (THEORY.md D10).
 
 ### Current unknowns
-
-- Whether Muon's approximate Newton–Schulz makes the "free" nuclear-norm proxy materially biased. The smoke run hints yes; Exp 0 will quantify it.
-- Whether real momenta sit in the low-rank regime where §4.3 predicts large geometry differences.
-- Whether a secant estimate from consecutive minibatches measures curvature or gradient noise.
-- H1–H9: all NOT TESTED ([docs/HYPOTHESES.md](docs/HYPOTHESES.md)).
+- H1–H9 are all NOT TESTED at the time of writing ([docs/HYPOTHESES.md](docs/HYPOTHESES.md)). Stage 3 results will be recorded in [docs/RESULTS.md](docs/RESULTS.md).
 
 ## Installation
 
@@ -61,10 +62,16 @@ Run the Exp 0 pipeline smoke check (writes to the gitignored `results/scratch/`)
 python -m scripts.run_experiment --config configs/synthetic/exp000_smoke.yaml --out results/scratch
 ```
 
-Run Exp 0 itself (not yet run; awaiting approval):
+Run Exp 0 itself:
 
 ```bash
 python -m scripts.run_experiment --config configs/synthetic/exp000_gradient_fit.yaml
+```
+
+Run the full Stage 3 chain (several hours on CPU):
+
+```bash
+bash scripts/run_stage3.sh
 ```
 
 Use any geometry as an optimizer:
@@ -80,17 +87,27 @@ opt = GeometricOptimizer(embedding_params, RowNorm("rows"), lr=0.01)            
 ## Layout
 
 ```
-mog/geometry/    Geometry interface: Euclidean, Elementwise, RowNorm, Spectral (full/grouped/per-expert, α)
-mog/optim/       GeometricOptimizer (any geometry + momentum; Muon-equivalent config)
-mog/selection/   gradient-fit / effective dimensions / E_c; secant curvature
-mog/utils/       seeds, environment capture, configs, non-overwriting run dirs
-configs/         one YAML per experiment
-experiments/     experiment entry points + registry.yaml
-scripts/         run_experiment.py (canonical runner), aggregate_results.py
-tests/           unit / math / reproducibility tests
-results/         raw/<exp_id>/<timestamp>/ per run; processed/; figures/
-docs/            plan, theory, hypotheses, protocol, log, results, roadmap, literature
+mog/geometry/    base (Geometry, Euclidean), elementwise, rowwise, grouped, spectral (full/grouped/per-expert, alpha)
+mog/optim/       geometric (any geometry + momentum), blockwise (per-block rules, switchable),
+                 adamw, muon, normuon, mog (online selector: gated on H2)
+mog/selection/   metrics, curvature (secant), atlas (profiler metrics), oracle, hysteresis, selector (gated)
+mog/models/      tiny_transformer, tiny_mlp, model_factory
+mog/training/    trainer, evaluation, logging
+mog/utils/       reproducibility (seed, env, configs, run dirs), config, seed, profiling
+mog/data.py      char-level Tiny Shakespeare with a seekable batch stream (data not committed)
+configs/         synthetic/, tiny/, 1m/, 5m/, larger/, arms.yaml (optimizer arms)
+experiments/     00_synthetic ... 06_scaling, sweep.py (generic arm x LR x seed), registry.yaml
+scripts/         run_experiment (canonical runner), aggregate_results, generate_plots,
+                 profile_overhead, make_stage3_configs, run_stage3.sh, build_report_*
+tests/           geometry, muon equivalence, blockwise rules, metrics, curvature, hysteresis, reproducibility
+results/         raw/<exp_id>/<timestamp>/ per run (never overwritten), processed/, figures/
+reports/         results-page template (built page: reports/atlas_report.html)
+docs/            plan, theory, hypotheses, protocol, log, results, roadmap, literature,
+                 FRAMEWORK (package design), PROBLEM_STATEMENT_CROSS_DOMAIN (spin-off project)
+notebooks/       exploration only
 ```
+
+The dataset is downloaded on first use to `data/tinyshakespeare.txt`, which is gitignored and SHA-256 checked; see `mog/data.py` for the URL.
 
 ## Experiment roadmap
 
@@ -108,7 +125,7 @@ Each stage has an explicit GO / NO-GO gate ([docs/RESEARCH_PLAN.md](docs/RESEARC
 
 ## Documentation
 
-[RESEARCH_PLAN](docs/RESEARCH_PLAN.md) · [THEORY](docs/THEORY.md) · [HYPOTHESES](docs/HYPOTHESES.md) · [EXPERIMENT_PROTOCOL](docs/EXPERIMENT_PROTOCOL.md) · [EXPERIMENT_LOG](docs/EXPERIMENT_LOG.md) · [RESULTS](docs/RESULTS.md) · [ROADMAP](docs/ROADMAP.md) · [LITERATURE](docs/LITERATURE.md)
+[RESEARCH_PLAN](docs/RESEARCH_PLAN.md) · [FRAMEWORK](docs/FRAMEWORK.md) · [PROBLEM_STATEMENT_CROSS_DOMAIN](docs/PROBLEM_STATEMENT_CROSS_DOMAIN.md) · [THEORY](docs/THEORY.md) · [HYPOTHESES](docs/HYPOTHESES.md) · [EXPERIMENT_PROTOCOL](docs/EXPERIMENT_PROTOCOL.md) · [EXPERIMENT_LOG](docs/EXPERIMENT_LOG.md) · [RESULTS](docs/RESULTS.md) · [ROADMAP](docs/ROADMAP.md) · [LITERATURE](docs/LITERATURE.md)
 
 ## License
 

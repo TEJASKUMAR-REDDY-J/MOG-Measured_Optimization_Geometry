@@ -1,0 +1,49 @@
+# Experiment registry: stable IDs. Status here mirrors docs/EXPERIMENT_LOG.md.
+# status: planned | ready | running | done | superseded | cancelled
+- id: exp000_synthetic_gradient_fit
+  stage: 0
+  dir: experiments/00_synthetic
+  config: configs/synthetic/exp000_gradient_fit.yaml
+  evidence_class: synthetic
+  tests: [PDF §4.3 table, Fig 1b/1c/1d/2a, NS dual-norm fidelity]
+  hypotheses: []          # checks PDF computations; tests none of H1-H9
+  status: ready
+- id: exp001_synthetic_extensions
+  stage: 1
+  dir: experiments/00_synthetic
+  evidence_class: synthetic
+  tests: [non-square shapes, sizes 64-2048, rank / condition-number sweeps]
+  hypotheses: []
+  status: planned
+- id: exp010_tiny_optimizer_sanity
+  stage: 2
+  dir: experiments/02_tiny_models
+  evidence_class: pilot
+  tests: [every geometry trains stably as a standalone optimizer; reproducibility]
+  hypotheses: []
+  status: planned
+- id: exp011_tiny_atlas_dryrun
+  stage: 2
+  dir: experiments/01_geometry_validation
+  evidence_class: pilot
+  tests: [atlas instrumentation; secant same-batch vs consecutive-batch; NS proxy on real momenta; overhead]
+  hypotheses: []
+  status: planned
+- id: exp100_atlas_1m
+  stage: 3
+  dir: experiments/01_geometry_validation
+  evidence_class: measured
+  hypotheses: [H1, H2]
+  status: planned
+- id: exp200_oracle_proxy_1m
+  stage: 3
+  dir: experiments/03_oracle
+  evidence_class: measured
+  hypotheses: [H1, H2]
+  status: planned
+- id: exp300_online_selection
+  stage: 4
+  dir: experiments/05_online_mog
+  evidence_class: measured
+  hypotheses: [H1, H7]
+  status: planned   # only if exp200 supports H2

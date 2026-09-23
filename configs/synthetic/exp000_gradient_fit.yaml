@@ -1,0 +1,39 @@
+experiment_id: exp000_synthetic_gradient_fit
+entry: experiments/00_synthetic/run.py
+evidence_class: synthetic   # closed-form / synthetic spectra; NOT a training measurement
+description: >
+  Reproduce PDF §4.3 table and Fig. 1b/1c/1d/2a on 512x512 Haar-random
+  power-law momentum matrices; measure Newton-Schulz dual-norm fidelity.
+seed: 0
+n_seeds: 5
+m: 512
+n: 512
+dtype: float64
+betas_table: [0.0, 0.5, 1.0, 1.5]
+betas_sweep: [0.0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1.0, 1.125, 1.25, 1.375, 1.5]
+betas_grouped: [0.0, 0.75, 1.5]
+group_sizes: [1, 2, 4, 8, 16, 32, 64, 128, 256, 512]
+ns_steps: 5
+ns_dtypes: [float32, bfloat16]
+
+# Values printed in the PDF §4.3 table (recorded for comparison only).
+pdf_reference_table:
+  "0.0": {r_eff: 512,  full_spectral: 1.000, rows: 1.000, elementwise: 0.637}
+  "0.5": {r_eff: 282,  full_spectral: 0.550, rows: 0.986, elementwise: 0.629}
+  "1.0": {r_eff: 28.3, full_spectral: 0.055, rows: 0.856, elementwise: 0.545}
+  "1.5": {r_eff: 5.30, full_spectral: 0.010, rows: 0.730, elementwise: 0.467}
+
+# Fig 1d. The PDF does not state the layer shape; 4096x4096 is an assumption.
+overhead:
+  m: 4096
+  n: 4096
+  ns_steps: 5
+  tokens_per_step: [65536, 524288]
+  group_sizes: [1, 8, 64, 512, 4096]
+
+# Fig 2a. s_g^2 = 1 / (k * fan_in * nu^2) is our reading of the PDF (matches its k=1 values).
+shrinkage:
+  tau: 0.30
+  fan_in: 4096
+  snr: [0.10, 0.03, 0.01]
+  group_sizes: [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096]

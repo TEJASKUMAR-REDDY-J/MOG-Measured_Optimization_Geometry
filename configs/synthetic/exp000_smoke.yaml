@@ -1,0 +1,17 @@
+experiment_id: exp000_smoke
+entry: experiments/00_synthetic/run.py
+evidence_class: smoke   # pipeline check only; write to results/scratch, never cite
+description: Tiny Exp 0 run (64x64, 2 seeds) to check the pipeline end to end.
+seed: 0
+n_seeds: 2
+m: 64
+n: 64
+dtype: float64
+betas_table: [0.0, 1.5]
+betas_sweep: [0.0, 1.5]
+betas_grouped: [0.0, 1.5]
+group_sizes: [1, 8, 64]
+ns_steps: 5
+ns_dtypes: [float32]
+overhead: {m: 64, n: 64, ns_steps: 5, tokens_per_step: [1024], group_sizes: [1, 64]}
+shrinkage: {tau: 0.30, fan_in: 64, snr: [0.1], group_sizes: [1, 64]}

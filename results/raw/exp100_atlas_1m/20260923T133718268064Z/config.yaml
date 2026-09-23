@@ -1,0 +1,34 @@
+experiment_id: exp100_atlas_1m
+entry: experiments/01_geometry_validation/atlas.py
+evidence_class: measured
+description: 'Geometry atlas on the 0.82M model: muon (incumbent, writes oracle checkpoints)
+  and adamw, seed 0, tuned LRs.'
+seed: 0
+arms:
+  muon:
+    hidden: spectral
+    default: adam
+  adamw:
+    default: adam
+lr:
+  muon: 0.01
+  adamw: 0.01
+atlas_every: 50
+checkpoints:
+- 100
+- 300
+- 500
+train:
+  model:
+    d: 128
+    n_layer: 4
+    n_head: 4
+    ctx: 128
+  batch_size: 16
+  steps: 600
+  warmup: 60
+  min_lr_frac: 0.1
+  eval_every: 100
+  eval_batches: 8
+  threads: 4
+  seed: 0

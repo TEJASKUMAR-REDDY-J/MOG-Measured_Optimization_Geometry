@@ -96,3 +96,11 @@ Seed policy: seed 0 is used only for LR tuning, the atlas and the oracle. Every 
 
 ### exp010 note (2026-09-23)
 - Run `results/raw/exp010_tiny_optimizer_sanity/20260923T105644*` records `git_dirty: true`. `git diff 365de92 -- mog experiments configs/tiny configs/arms.yaml scripts/run_experiment.py` is **empty**, so the code that ran is exactly commit 365de92. The dirty state came only from documentation edits and new, unused helper scripts that were added while the run was in progress. The run is kept as canonical, and from here on every launch is preceded by a commit.
+
+## Stage 3 progress checkpoint (2026-09-23, chain paused for a machine restart)
+- Complete and committed: exp150 and exp151 (LR tuning), exp100 (atlas), exp200 (oracle), exp290 (MOG-oracle LR tuning, best lr 0.01).
+- Aborted: `results/raw/exp160_1m_baselines/20260923T150729007364Z` after 19 of 42 runs. It is kept, not deleted, with an ABORTED.txt marker and no results.json, so the report builder ignores it. exp160 will be re-run in full.
+- Remaining steps on resume, in order:
+  1. `python -m scripts.run_experiment --config configs/1m/exp160_baselines.yaml`
+  2. `python -m scripts.run_experiment --config configs/1m/exp300_mog.yaml`
+- Pre-registered H2 decision (exp200): the free proxy has median ρ −0.33 and top-1 agreement 8.6% vs 12.1% chance, so **H2 is FALSIFIED**. The same-batch proxy has ρ 0.22. The online proxy selector is **NO-GO**. Full analysis follows after exp160 and exp300.

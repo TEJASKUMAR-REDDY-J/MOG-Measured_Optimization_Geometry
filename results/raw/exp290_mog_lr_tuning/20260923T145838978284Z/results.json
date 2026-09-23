@@ -1,0 +1,31 @@
+{
+  "command": "python -m scripts.run_experiment --config configs/1m/exp290_mog_lr_tuning.yaml",
+  "error": null,
+  "evidence_class": "measured",
+  "experiment_id": "exp290_mog_lr_tuning",
+  "git_commit": "b4b7a396009a05b578de47dcf0bdb1ef568412ac",
+  "git_dirty": false,
+  "seed": 0,
+  "status": "ok",
+  "summary": {
+    "mog_oracle|0.00333333|0": {
+      "diverged": false,
+      "final_train": 1.6250006115436555,
+      "final_val": 1.7782603204250336,
+      "wall_s": 143.05
+    },
+    "mog_oracle|0.01|0": {
+      "diverged": false,
+      "final_train": 1.5280886960029603,
+      "final_val": 1.7033201903104782,
+      "wall_s": 147.24
+    },
+    "mog_oracle|0.03|0": {
+      "diverged": false,
+      "final_train": 1.6271566259860992,
+      "final_val": 1.7944353073835373,
+      "wall_s": 224.41
+    }
+  },
+  "wall_time_s": 515.103
+}

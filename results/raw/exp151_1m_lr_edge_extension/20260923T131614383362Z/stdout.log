@@ -1,0 +1,7 @@
+duality    lr=0.00333333 seed=0 val=1.7666 train=1.6142 (252.38 s)
+headmuon   lr=0.00333333 seed=0 val=1.7824 train=1.6322 (183.67 s)
+muon       lr=0.00333333 seed=0 val=1.7547 train=1.6065 (174.42 s)
+muon_all   lr=0.00333333 seed=0 val=1.8028 train=1.6447 (188.98 s)
+normuon    lr=0.00333333 seed=0 val=1.7567 train=1.6020 (146.11 s)
+pw05       lr=0.00111111 seed=0 val=2.1103 train=2.0429 (168.04 s)
+scion      lr=0.00333333 seed=0 val=1.7604 train=1.6131 (137.75 s)

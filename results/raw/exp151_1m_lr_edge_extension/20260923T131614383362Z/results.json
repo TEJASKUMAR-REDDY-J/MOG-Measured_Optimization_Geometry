@@ -1,0 +1,55 @@
+{
+  "command": "python -m scripts.run_experiment --config configs/1m/exp151_lr_edge_extension.yaml",
+  "error": null,
+  "evidence_class": "measured",
+  "experiment_id": "exp151_1m_lr_edge_extension",
+  "git_commit": "70eb1ab2b91282d19781e52868fc0fc707afe667",
+  "git_dirty": false,
+  "seed": 0,
+  "status": "ok",
+  "summary": {
+    "duality|0.00333333|0": {
+      "diverged": false,
+      "final_train": 1.6142190563678742,
+      "final_val": 1.7666056901216507,
+      "wall_s": 252.38
+    },
+    "headmuon|0.00333333|0": {
+      "diverged": false,
+      "final_train": 1.6321516966819762,
+      "final_val": 1.7823887020349503,
+      "wall_s": 183.67
+    },
+    "muon_all|0.00333333|0": {
+      "diverged": false,
+      "final_train": 1.644749366044998,
+      "final_val": 1.8027731329202652,
+      "wall_s": 188.98
+    },
+    "muon|0.00333333|0": {
+      "diverged": false,
+      "final_train": 1.6065124344825745,
+      "final_val": 1.754663124680519,
+      "wall_s": 174.42
+    },
+    "normuon|0.00333333|0": {
+      "diverged": false,
+      "final_train": 1.6020232474803924,
+      "final_val": 1.7566529512405396,
+      "wall_s": 146.11
+    },
+    "pw05|0.00111111|0": {
+      "diverged": false,
+      "final_train": 2.042864488363266,
+      "final_val": 2.1103436648845673,
+      "wall_s": 168.04
+    },
+    "scion|0.00333333|0": {
+      "diverged": false,
+      "final_train": 1.6130790853500365,
+      "final_val": 1.7603943943977356,
+      "wall_s": 137.75
+    }
+  },
+  "wall_time_s": 1252.054
+}

@@ -1,0 +1,94 @@
+experiment_id: exp150_1m_lr_tuning
+entry: experiments/sweep.py
+evidence_class: measured
+description: 'Stage-3 LR tuning: 3-point grid {1/3,1,3} x exp010 tiny-best LR per
+  arm, seed 0 only.'
+seed: 0
+arms_file: configs/arms.yaml
+arms:
+- sgd
+- adamw
+- lion
+- adam_mini
+- signum
+- normsgd
+- rownorm
+- muon_all
+- muon
+- normuon
+- headmuon
+- pw05
+- duality
+- scion
+lr:
+  sgd:
+  - 0.1
+  - 0.3
+  - 0.9
+  adamw:
+  - 0.00333333
+  - 0.01
+  - 0.03
+  lion:
+  - 0.00033333
+  - 0.001
+  - 0.003
+  adam_mini:
+  - 0.00333333
+  - 0.01
+  - 0.03
+  signum:
+  - 0.001
+  - 0.003
+  - 0.009
+  normsgd:
+  - 0.001
+  - 0.003
+  - 0.009
+  rownorm:
+  - 0.001
+  - 0.003
+  - 0.009
+  muon_all:
+  - 0.01
+  - 0.03
+  - 0.09
+  muon:
+  - 0.01
+  - 0.03
+  - 0.09
+  normuon:
+  - 0.01
+  - 0.03
+  - 0.09
+  headmuon:
+  - 0.01
+  - 0.03
+  - 0.09
+  pw05:
+  - 0.00333333
+  - 0.01
+  - 0.03
+  duality:
+  - 0.01
+  - 0.03
+  - 0.09
+  scion:
+  - 0.01
+  - 0.03
+  - 0.09
+seeds:
+- 0
+train:
+  model:
+    d: 128
+    n_layer: 4
+    n_head: 4
+    ctx: 128
+  batch_size: 16
+  steps: 600
+  warmup: 60
+  min_lr_frac: 0.1
+  eval_every: 100
+  eval_batches: 8
+  threads: 4

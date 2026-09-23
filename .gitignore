@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Environments and secrets
+.venv/
+venv/
+.env
+.env.*
+*.token
+hf_token*
+
+# Checkpoints, datasets, caches (never commit)
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.bin
+checkpoints/
+data/
+datasets/
+wandb/
+.cache/
+
+# Scratch runs (smoke tests write here; canonical runs go to results/raw/)
+results/scratch/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

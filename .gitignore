@@ -35,3 +35,7 @@ results/scratch/
 Thumbs.db
 .vscode/
 .idea/
+
+# Generated results-page outputs (rebuild with python -m scripts.generate_plots)
+reports/report_data.json
+reports/atlas_report.html

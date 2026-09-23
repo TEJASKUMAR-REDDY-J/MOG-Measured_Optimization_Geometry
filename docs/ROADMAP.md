@@ -8,18 +8,18 @@
 - [x] Runner, reproducibility, results index, report builders
 - [x] Exp 0 synthetic (PASS)
 - [x] Stage 2: exp010 sweep, exp011/012 pilots (GO)
-- [ ] Stage 3: exp150 → exp100 → exp200 → exp290 → exp160 → exp300 (running, `scripts/run_stage3.sh`)
+- [x] Stage 3: exp150/151 → exp100 → exp200 → exp290 → exp160 → exp300 (gate: NO-GO for scaling; redesign)
 
 ## Next
-- [ ] Stage 3 analysis: RESULTS.md, HYPOTHESES.md statuses, gate decision for Stage 4
-- [ ] Results page (`reports/atlas_report.html`)
+- [ ] Redesign pre-registrations: H2' own-direction proxy, joint/longer-horizon oracle, H4 random-partition control
+- [ ] Results page (`reports/`, private, UI paused)
 - [ ] Framework extraction (docs/FRAMEWORK.md): generic block discovery; atlas and oracle behind a library API
 - [ ] Stage 1 synthetic extensions (non-square shapes, sizes, rank sweeps)
 
 ## Gated modules (present, raise NotImplementedError)
 | Module | Gate |
 |---|---|
-| `mog/optim/mog.py`, `mog/selection/selector.py` | Built only if Exp 2 does not falsify H2 (the proxy predicts the oracle) |
+| `mog/optim/mog.py`, `mog/selection/selector.py` | NO-GO: Exp 2 falsified H2. Revisit only if a redesigned proxy (H2') passes |
 
 ## Structure notes
 - `mog/geometry/grouped.py` defines `GroupedSpectral` on top of `Spectral(k=...)`. Whole-matrix spectral is the k=m case of grouped, so the math lives in one place.

@@ -1,0 +1,31 @@
+{
+  "command": "python -m scripts.run_experiment --config configs/1m/exp300_mog.yaml",
+  "error": null,
+  "evidence_class": "measured",
+  "experiment_id": "exp300_mog_1m",
+  "git_commit": "fc0beb175e8d51c5b57e39b6a6303efc7a9bc6d4",
+  "git_dirty": false,
+  "seed": 1,
+  "status": "ok",
+  "summary": {
+    "mog_oracle|0.01|1": {
+      "diverged": false,
+      "final_train": 1.5303753530979156,
+      "final_val": 1.702919378876686,
+      "wall_s": 160.5
+    },
+    "mog_oracle|0.01|2": {
+      "diverged": false,
+      "final_train": 1.5315217983722687,
+      "final_val": 1.7007921636104584,
+      "wall_s": 146.77
+    },
+    "mog_oracle|0.01|3": {
+      "diverged": false,
+      "final_train": 1.5375658452510834,
+      "final_val": 1.7101702690124512,
+      "wall_s": 143.09
+    }
+  },
+  "wall_time_s": 451.025
+}

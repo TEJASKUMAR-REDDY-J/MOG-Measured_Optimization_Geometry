@@ -104,3 +104,37 @@ Seed policy: seed 0 is used only for LR tuning, the atlas and the oracle. Every 
   1. `python -m scripts.run_experiment --config configs/1m/exp160_baselines.yaml`
   2. `python -m scripts.run_experiment --config configs/1m/exp300_mog.yaml`
 - Pre-registered H2 decision (exp200): the free proxy has median ρ −0.33 and top-1 agreement 8.6% vs 12.1% chance, so **H2 is FALSIFIED**. The same-batch proxy has ρ 0.22. The online proxy selector is **NO-GO**. Full analysis follows after exp160 and exp300.
+
+---
+
+## Stage 3 results (2026-09-23). Full tables are in RESULTS.md.
+
+### exp150 / exp151: LR tuning (seed 0)
+- Result: every arm's best LR is inside its grid after the edge rule. Tuned LRs are in `configs/1m/exp160_baselines.yaml`.
+- Reproducibility check: the atlas run (exp100) reproduced the tuning finals exactly (muon 1.6862, adamw 2.0280), and the exp160 re-run matched the aborted attempt (sgd seed 1: 2.4138). Training is deterministic, and the instrumentation does not perturb it.
+
+### exp100: atlas (descriptive)
+- (a) The r_eff trend runs against H2's sub-claim. Momentum r_eff/min(m,n) *rises* over training: Muon 0.16→0.36 with no block falling; AdamW 0.09→0.14 with 7% of blocks falling.
+- (b) The free secant is 2.3–4.5× the same-batch secant, and block gradient SNR is below 1. The PDF's free curvature estimate is dominated by gradient noise at 2048 tokens/step.
+- (c) The E_c argmax is "sign" in 77–96% of cells, but sign/elementwise arms lose by about 0.44 nats in exp160, so the proxy mis-ranks.
+
+### exp200: oracle and proxy (H1, H2)
+- H2 is **FALSIFIED** under the pre-registered rule. The free proxy has median ρ −0.33 and top-1 agreement of 8.6% against 12.1% chance (binomial p=0.87). The same-batch proxy has ρ 0.22, and neither passes.
+- Gate: the online proxy selector is **NO-GO** and is not built.
+- Exploratory, not pre-registered: the own-direction secant (one extra backward per candidate) reaches ρ 0.76 with top-1 of 48% (p=2e-15). Gradient-fit alone (ρ −0.87) and 1-step lookahead (ρ −0.86) anti-predict the 20-step oracle, which confirms the PDF's greedy-myopia risk.
+- Oracle choices: 60 of 81 cells prefer a non-incumbent rule and 36 of those are stable on the alternate stream, but the gains are tiny (median stable gain 7e-5 nats). The consistent pattern is NorMuon on MLP up-projections (12/12 cells, 9 stable).
+
+### exp160 + exp300: matched-token comparison (seeds 1–3)
+- Spectral hidden-weight geometry beats AdamW by about 0.35 nats. NorMuon, Muon and Duality are tied.
+- The oracle-scheduled MOG arm scores 1.7046 against NorMuon's 1.6897: Δ +0.0150 [−0.0010, +0.0310]. Against Muon it is +0.0119 [−0.0015, +0.0252]. **H1 is NOT SUPPORTED** at 0.82M: the pre-registered verdict is INCONCLUSIVE, and the point estimate is unfavourable.
+- Interpretation: single-block, short-horizon oracle wins do not add up. Composing up to 12 simultaneous switches per phase gives a slightly worse run. Possible causes are block interactions (Prop. 3 coupling) and horizon myopia.
+- Per-head Muon is worse than whole-matrix Muon (+0.032 [+0.012, +0.052]), which is partial evidence against H4. Adam-mini is unstable on seed 1 at its tuned LR.
+
+### Gate decision: Stage 3 → 4
+- **NO-GO for scaling MOG as specified in the PDF.** Its free proxy fails, and the oracle-derived assignment does not beat the tuned baselines.
+- **REDESIGN before any scale-up.** Each item below needs a new pre-registration:
+  1. H2′: the own-direction secant proxy (it cost one extra backward per candidate here), tested on fresh checkpoints and seeds.
+  2. A longer-horizon oracle, plus a joint (multi-block) oracle, to test the additivity assumption.
+  3. The random-partition control for H4.
+  4. A realistic tokenizer for H5.
+- The robust finding here is the well-known one: spectral geometry on hidden weights ≫ elementwise geometry at this scale.

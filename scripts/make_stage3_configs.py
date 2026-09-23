@@ -14,7 +14,7 @@ import numpy as np
 import yaml
 
 from mog.utils.reproducibility import REPO_ROOT
-from scripts.build_report_data import latest, sweep_summary
+from reports.build_report_data import latest, sweep_summary
 
 ARMS = ["sgd", "adamw", "lion", "adam_mini", "signum", "normsgd", "rownorm", "muon_all",
         "muon", "normuon", "headmuon", "pw05", "duality", "scion"]

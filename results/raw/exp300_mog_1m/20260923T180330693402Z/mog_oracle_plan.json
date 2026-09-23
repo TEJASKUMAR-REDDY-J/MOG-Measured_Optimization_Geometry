@@ -1,0 +1,44 @@
+{
+  "100": {
+    "L0.q": "normuon",
+    "L0.o": "normuon",
+    "L0.up": "normuon",
+    "L1.k": "normuon",
+    "L1.v": "normuon",
+    "L1.o": "normuon",
+    "L1.up": "normuon",
+    "L1.down": "normuon",
+    "L2.q": "sign",
+    "L2.v": "normuon",
+    "L3.v": "normuon",
+    "head": "spectral"
+  },
+  "300": {
+    "L0.q": "normuon",
+    "L0.k": "normuon",
+    "L0.v": "normuon",
+    "L0.up": "normuon",
+    "L0.down": "normuon",
+    "L1.up": "normuon",
+    "L2.o": "normuon",
+    "L2.up": "normuon",
+    "L2.down": "normuon",
+    "L3.v": "sign",
+    "L3.up": "normuon",
+    "head": "sign"
+  },
+  "500": {
+    "L0.k": "normuon",
+    "L0.v": "normuon",
+    "L0.up": "normuon",
+    "L1.v": "adam",
+    "L1.o": "normuon",
+    "L1.up": "normuon",
+    "L2.q": "sign",
+    "L2.v": "normuon",
+    "L3.q": "spectral_head",
+    "L3.k": "pw05",
+    "L3.o": "normuon",
+    "L3.up": "normuon"
+  }
+}

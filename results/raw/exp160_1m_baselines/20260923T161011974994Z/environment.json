@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "F:\\MOG Measured Optimization Geometry\\scripts\\run_experiment.py",
+    "--config",
+    "configs/1m/exp160_baselines.yaml"
+  ],
+  "cpu_count": 4,
+  "cuda_available": false,
+  "cuda_device": null,
+  "git_commit": "fc0beb175e8d51c5b57e39b6a6303efc7a9bc6d4",
+  "git_dirty": false,
+  "numpy": "1.26.4",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 142 Stepping 12, GenuineIntel",
+  "python": "3.12.7",
+  "timestamp_utc": "2026-09-23T16:10:12+00:00",
+  "torch": "2.8.0+cpu"
+}

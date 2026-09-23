@@ -81,7 +81,7 @@ class Atlas:
             gm, gd = (g1[name] + g2[name]) / 2, (g1[name] - g2[name])
             noise = gd.pow(2) / 4
             row["snr_block"] = float((gm.pow(2).sum() - noise.sum()).clamp_min(0) / noise.sum())
-            row["snr_row_median"] = float(((gm.pow(2).sum(1) - noise.sum(1)).clamp_min(0) / noise.sum(1)).median())
+            row["snr_row_median"] = float(torch.nanmedian((gm.pow(2).sum(1) - noise.sum(1)).clamp_min(0) / noise.sum(1)))  # absent tokens: 0/0
             mod_name = {"head": "head"}.get(b["kind"], name.replace("L", "layers.", 1) if name.startswith("L") else None)
             row["act_pr"] = A.participation_ratio(acts[mod_name]) if mod_name in acts else float("nan")
             self.rows.append(row)

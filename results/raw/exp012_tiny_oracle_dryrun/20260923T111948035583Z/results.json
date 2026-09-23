@@ -1,0 +1,83 @@
+{
+  "command": "python -m scripts.run_experiment --config configs/tiny/exp012_oracle_dryrun.yaml",
+  "error": null,
+  "evidence_class": "pilot",
+  "experiment_id": "exp012_tiny_oracle_dryrun",
+  "git_commit": "365de926bfbf2bde6445e56b4a2c8e6da0817074",
+  "git_dirty": true,
+  "seed": 0,
+  "status": "ok",
+  "summary": {
+    "best_rule_counts": {
+      "cols": 1,
+      "euclid": 1,
+      "normuon": 11,
+      "sign": 3,
+      "spectral": 13,
+      "spectral_head": 1
+    },
+    "median_best_gain": 1.7076730728149414e-05,
+    "n_block_ckpts": 30,
+    "non_incumbent_stable_on_alt_data": 13,
+    "oracle_prefers_non_incumbent": 20,
+    "proxies": {
+      "fit": {
+        "mean_regret": 0.003227367003758748,
+        "n_blocks": 30,
+        "spearman_iqr": [
+          -0.8333333333333335,
+          -0.6190476190476191
+        ],
+        "spearman_median": -0.7583333333333333,
+        "top1_agreement": 0.03333333333333333,
+        "top1_chance": 0.1259259259259259
+      },
+      "free": {
+        "mean_regret": 0.0028067946434020994,
+        "n_blocks": 30,
+        "spearman_iqr": [
+          -0.6124999999999999,
+          0.18214285714285716
+        ],
+        "spearman_median": -0.41666666666666674,
+        "top1_agreement": 0.0,
+        "top1_chance": 0.1259259259259259
+      },
+      "lookahead": {
+        "mean_regret": 0.00266302227973938,
+        "n_blocks": 30,
+        "spearman_iqr": [
+          -0.7791666666666667,
+          -0.4196428571428571
+        ],
+        "spearman_median": -0.6464285714285715,
+        "top1_agreement": 0.03333333333333333,
+        "top1_chance": 0.1259259259259259
+      },
+      "own": {
+        "mean_regret": 0.0014964520931243896,
+        "n_blocks": 30,
+        "spearman_iqr": [
+          0.30952380952380953,
+          0.7107142857142857
+        ],
+        "spearman_median": 0.5321428571428573,
+        "top1_agreement": 0.2,
+        "top1_chance": 0.1259259259259259
+      },
+      "same": {
+        "mean_regret": 0.0027280012766520184,
+        "n_blocks": 30,
+        "spearman_iqr": [
+          0.03333333333333333,
+          0.3916666666666666
+        ],
+        "spearman_median": 0.14642857142857144,
+        "top1_agreement": 0.03333333333333333,
+        "top1_chance": 0.1259259259259259
+      }
+    },
+    "source_run": "results\\raw\\exp011_tiny_atlas_dryrun\\20260923T111913228714Z"
+  },
+  "wall_time_s": 222.753
+}

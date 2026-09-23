@@ -1,0 +1,36 @@
+source run: F:\MOG Measured Optimization Geometry\results\raw\exp011_tiny_atlas_dryrun\20260923T111913228714Z
+F:\MOG Measured Optimization Geometry\experiments\03_oracle\oracle.py:79: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\torch\csrc\autograd\generated\python_variable_methods.cpp:836.)
+  return float(loss), {b["name"]: b["param"].grad.clone() for b in bl}
+ckpt 100: L0=2.4538 incumbent-rollout=2.4269
+  embed    inc=adam      best=sign          gain=+0.00168 alt=+0.00172
+  pos      inc=adam      best=sign          gain=+0.00120 alt=+0.00074
+  L0.q     inc=spectral  best=spectral      gain=+0.00000 alt=+0.00000
+  L0.k     inc=spectral  best=normuon       gain=+0.00007 alt=+0.00007
+  L0.v     inc=spectral  best=normuon       gain=+0.00002 alt=-0.00002
+  L0.o     inc=spectral  best=spectral      gain=+0.00000 alt=+0.00000
+  L0.up    inc=spectral  best=normuon       gain=+0.00092 alt=+0.00056
+  L0.down  inc=spectral  best=normuon       gain=+0.00001 alt=+0.00004
+  L1.q     inc=spectral  best=cols          gain=+0.00043 alt=-0.00009
+  L1.k     inc=spectral  best=spectral      gain=+0.00000 alt=+0.00000
+  L1.v     inc=spectral  best=spectral      gain=+0.00000 alt=+0.00000
+  L1.o     inc=spectral  best=normuon       gain=+0.00001 alt=-0.00001
+  L1.up    inc=spectral  best=normuon       gain=+0.00009 alt=+0.00018
+  L1.down  inc=spectral  best=normuon       gain=+0.00002 alt=+0.00001
+  head     inc=adam      best=spectral      gain=+0.00373 alt=+0.00902
+ckpt 200: L0=2.2385 incumbent-rollout=2.2074
+  embed    inc=adam      best=sign          gain=+0.00004 alt=+0.00096
+  pos      inc=adam      best=spectral      gain=+0.00389 alt=+0.00222
+  L0.q     inc=spectral  best=normuon       gain=+0.00000 alt=-0.00000
+  L0.k     inc=spectral  best=spectral      gain=+0.00000 alt=+0.00000
+  L0.v     inc=spectral  best=normuon       gain=+0.00003 alt=+0.00002
+  L0.o     inc=spectral  best=spectral      gain=+0.00000 alt=+0.00000
+  L0.up    inc=spectral  best=normuon       gain=+0.00000 alt=+0.00008
+  L0.down  inc=spectral  best=spectral      gain=+0.00000 alt=+0.00000
+  L1.q     inc=spectral  best=spectral_head gain=+0.00000 alt=-0.00008
+  L1.k     inc=spectral  best=euclid        gain=+0.00114 alt=-0.00012
+  L1.v     inc=spectral  best=spectral      gain=+0.00000 alt=+0.00000
+  L1.o     inc=spectral  best=spectral      gain=+0.00000 alt=+0.00000
+  L1.up    inc=spectral  best=normuon       gain=+0.00008 alt=+0.00000
+  L1.down  inc=spectral  best=spectral      gain=+0.00000 alt=+0.00000
+  head     inc=adam      best=spectral      gain=+0.00280 alt=-0.00152

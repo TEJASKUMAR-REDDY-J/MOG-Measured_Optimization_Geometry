@@ -1,0 +1,45 @@
+experiment_id: exp151_1m_lr_edge_extension
+entry: experiments/sweep.py
+evidence_class: measured
+description: 'Pre-registered edge rule: one extra LR beyond the edge for arms whose
+  exp150 best sat at a grid edge.'
+seed: 0
+arms_file: configs/arms.yaml
+arms:
+- duality
+- headmuon
+- muon
+- muon_all
+- normuon
+- pw05
+- scion
+lr:
+  muon_all:
+  - 0.00333333
+  muon:
+  - 0.00333333
+  normuon:
+  - 0.00333333
+  headmuon:
+  - 0.00333333
+  pw05:
+  - 0.00111111
+  duality:
+  - 0.00333333
+  scion:
+  - 0.00333333
+seeds:
+- 0
+train:
+  model:
+    d: 128
+    n_layer: 4
+    n_head: 4
+    ctx: 128
+  batch_size: 16
+  steps: 600
+  warmup: 60
+  min_lr_frac: 0.1
+  eval_every: 100
+  eval_batches: 8
+  threads: 4

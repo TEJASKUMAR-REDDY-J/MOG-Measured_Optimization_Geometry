@@ -57,6 +57,19 @@ a manual re-read before they are cited in any write-up.
 | Descending through a Crowded Valley — Benchmarking Deep Learning Optimizers | Schmidt, Schneider, Hennig | 2020 | arXiv:2007.01547 | Tuning-budget protocol | yes |
 | Benchmarking Neural Network Training Algorithms (AlgoPerf) | Dahl, Schneider, Nado, et al. | 2023 | arXiv:2306.07179 | Tuning-budget protocol | yes |
 
+## B2. Literature study for the experimental phase (added 2026-09-23)
+
+| Title | Authors | Year | Identifier | Relevance | Claim used / checked | Content check |
+|---|---|---|---|---|---|---|
+| **From SGD to Muon: Adaptive Optimization via Schatten-p Norms** | Massena, Friedrich, Serrurier | 2026 (19 May) | arXiv:2605.19781 | **Direct prior work on MOG's central idea.** It picks the LMO geometry per layer, dynamically, from gradient and activation statistics, using a closed-form random-feature-regression surrogate. The design space runs from SGD to Muon (Schatten-p, i.e. PDF's α axis) plus preconditioning, and recovers SGD, Muon, Adam and MuAdam. Overhead is ~3%. It matches or beats the better of Muon and AdamW in 3 settings. | This contradicts the PDF §2.4 gap claim that "nobody selects the geometry per block from measurement" (THEORY D10). MOG's remaining distinctions are the grouping axis 𝒢 (heads/experts/rows), the oracle-vs-proxy validation methodology, and the damping/shrinkage theory. | Abstract read |
+| Noise-Adaptive Layerwise Learning Rates: Accelerating Geometry-Aware Optimization for Deep Neural Network Training | Hao, Gong, Xu, Wang, Liu | 2025 (rev. 2026) | arXiv:2510.14009 | Adapts *per-layer LR* within geometry-aware optimizers from gradient-variance estimates in the LMO's dual norm. Related to Prop. 4's noise-driven scale. | Background | Abstract read |
+| AdaMuon: Adaptive Muon Optimizer | (see arXiv) | 2025 | arXiv:2507.11005 | Element-wise second moment after orthogonalization. Close to NorMuon, which we implement. | Background | Title and ID from search listing only |
+| Scion (norm-constrained LMOs), Rec. 3.1 | Pethick et al. | 2025 | arXiv:2502.07529 | Our `scion` arm | Input/embedding: ColNorm (per token); hidden: Spectral √(d_out/d_in); output: **Sign** (1/d_in); biases: RMS. This differs from the PDF §2.2 prescription of per-token rows on the output layer, and our `duality` vs `scion` arms test exactly that difference. | HTML (summarized) |
+| Adam-mini partition principle | Zhang et al. | 2024 | arXiv:2406.16793 | Our `adam_mini` arm | Q/K by heads, V/attn.proj/MLP by output neurons, embed/output by tokens; v_b = EMA of mean(g⊙g) over the block. | HTML (summarized) |
+| NorMuon algorithm | Li et al. | 2025 | arXiv:2510.05491 | Our `normuon` rule | M←β1 M+(1−β1)G; O=NS5(M); v←β2 v+(1−β2) mean_cols(O⊙O); Ô=O/(√v+ε); step 0.2·η·√(mn)/‖Ô‖_F; β1=β2=0.95. | HTML (summarized) |
+| Lion update rule | Chen et al. | 2023 | arXiv:2302.06675 | Our `lion` rule | c=β1 m+(1−β1)g; update sign(c); m←β2 m+(1−β2)g; β1=0.9, β2=0.99. Taken from the paper's algorithm, which is well known; the abstract does not state it. | Background knowledge; ID verified |
+| Moonlight RMS matching | Liu et al. | 2025 | arXiv:2502.16982 | The 0.2-RMS convention for our LMO rules | Abstract: "carefully adjusting the per-parameter update scale". The 0.2·√max(A,B) factor is from the paper body. | Abstract read; factor from background knowledge (NorMuon's HTML also uses 0.2 RMS) |
+
 ## C. Claims in the PDF with no source
 
 - "Gradient spectra are widely reported to become more low-rank as training proceeds" (§4.3). No citation is given, so it is **unverified**. H2's k-shrinkage prediction depends on it, and Exp 1 will measure it directly.

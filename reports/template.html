@@ -1,0 +1,445 @@
+<title>Optimizer Geometry Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,500;1,400&display=swap">
+<style>
+:root{
+  --page:#f6f7f8; --surface:#fcfcfb; --ink:#0f1720; --ink2:#4a525c; --muted:#838a93; --grid:#e2e5e8; --axis:#c3c8ce; --ring:rgba(15,23,32,.12);
+  --accent:#1f4f8f;
+  --f1:#2a78d6; --f2:#eb6834; --f3:#1baf7a; --f4:#eda100; --f5:#e87ba4;
+  --on1:#ffffff; --on2:#0f1720; --on3:#0f1720; --on4:#0f1720; --on5:#0f1720;
+  --seq0:#cde2fb; --seq1:#86b6ef; --seq2:#3987e5; --seq3:#1c5cab; --seq4:#0d366b;
+  --good:#0ca30c; --warn:#fab219; --crit:#d03b3b;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#0e1114; --surface:#161a1e; --ink:#eef1f4; --ink2:#b9c0c8; --muted:#848c95; --grid:#262c32; --axis:#39414a; --ring:rgba(238,241,244,.14);
+  --accent:#8fb6ea;
+  --f1:#3987e5; --f2:#d95926; --f3:#199e70; --f4:#c98500; --f5:#d55181;
+  --on1:#ffffff; --on2:#ffffff; --on3:#ffffff; --on4:#0f1720; --on5:#ffffff;
+  --seq0:#184f95; --seq1:#256abf; --seq2:#3987e5; --seq3:#86b6ef; --seq4:#cde2fb;
+  color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --page:#0e1114; --surface:#161a1e; --ink:#eef1f4; --ink2:#b9c0c8; --muted:#848c95; --grid:#262c32; --axis:#39414a; --ring:rgba(238,241,244,.14);
+  --accent:#8fb6ea;
+  --f1:#3987e5; --f2:#d95926; --f3:#199e70; --f4:#c98500; --f5:#d55181;
+  --on1:#ffffff; --on2:#ffffff; --on3:#ffffff; --on4:#0f1720; --on5:#ffffff;
+  --seq0:#184f95; --seq1:#256abf; --seq2:#3987e5; --seq3:#86b6ef; --seq4:#cde2fb;
+  color-scheme:dark;}
+*{box-sizing:border-box}
+body{background:var(--page);color:var(--ink);font:15px/1.6 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;padding-inline:16px;padding-block:28px 64px}
+.wrap{max-width:1060px;margin:0 auto;display:flex;flex-direction:column;gap:44px}
+h1{font:500 clamp(28px,4.4vw,40px)/1.15 "IBM Plex Serif",Georgia,serif;margin:0;text-wrap:balance;letter-spacing:-.01em}
+h2{font:500 24px/1.25 "IBM Plex Serif",Georgia,serif;margin:0 0 6px;text-wrap:balance}
+h3{font:600 14px/1.3 "IBM Plex Sans",sans-serif;margin:0;letter-spacing:.02em}
+p{margin:0;max-width:70ch}
+.lede{font-size:17px;color:var(--ink2)}
+.eyebrow{font:500 12px/1 "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+section{display:flex;flex-direction:column;gap:14px}
+.panel{background:var(--surface);border:1px solid var(--ring);border-radius:10px;padding:18px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:500 12px/1 "IBM Plex Mono",monospace;padding:6px 9px;border-radius:999px;border:1px solid var(--ring);color:var(--ink2);background:var(--surface)}
+.verdicts{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.verdict{background:var(--surface);border:1px solid var(--ring);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.verdict .tag{font:600 11px/1 "IBM Plex Mono",monospace;letter-spacing:.06em;display:inline-flex;align-items:center;gap:6px}
+.tag::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.tag.pass{color:var(--good)} .tag.fail{color:var(--crit)} .tag.inc{color:var(--muted)} .tag.warn{color:#b27700}
+.verdict .big{font:500 22px/1.2 "IBM Plex Sans",sans-serif}
+.verdict p{font-size:13.5px;color:var(--ink2)}
+button,select{font:inherit}
+.seg{display:inline-flex;border:1px solid var(--ring);border-radius:8px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:transparent;color:var(--ink2);padding:7px 12px;cursor:pointer;font-size:13px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--page)}
+.seg button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+select{background:var(--surface);color:var(--ink);border:1px solid var(--ring);border-radius:8px;padding:7px 10px;font-size:13px}
+label{font-size:13px;color:var(--ink2)}
+.scroll{overflow-x:auto}
+svg text{fill:var(--ink2);font:11px "IBM Plex Sans",system-ui,sans-serif}
+svg .t-ink{fill:var(--ink)} svg .t-muted{fill:var(--muted)} svg .mono{font-family:"IBM Plex Mono",monospace}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--ink2)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.sw{width:12px;height:12px;border-radius:3px;display:inline-block}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:16px}
+table{border-collapse:collapse;font-size:13px;width:100%}
+th,td{text-align:left;padding:6px 10px;border-bottom:1px solid var(--grid);white-space:nowrap}
+th{color:var(--muted);font-weight:500;font-size:12px}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-family:"IBM Plex Mono",monospace;font-size:12.5px}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--page);font-size:12.5px;line-height:1.45;padding:8px 10px;border-radius:7px;max-width:300px;z-index:9;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.tip b{font-weight:600}
+.note{font-size:13px;color:var(--muted);max-width:80ch}
+.callout{border-left:0;background:color-mix(in srgb,var(--accent) 7%,var(--surface));border-radius:10px;padding:14px 16px;font-size:14px}
+details{font-size:14px} summary{cursor:pointer;color:var(--ink2)}
+code{font-family:"IBM Plex Mono",monospace;font-size:12.5px;background:color-mix(in srgb,var(--ink) 6%,transparent);padding:1px 5px;border-radius:4px}
+pre{font:12.5px/1.5 "IBM Plex Mono",monospace;background:var(--surface);border:1px solid var(--ring);border-radius:8px;padding:12px;overflow-x:auto;margin:0}
+.stat{font:500 13px "IBM Plex Mono",monospace;color:var(--ink2)}
+@media (prefers-reduced-motion:no-preference){.blk{transition:fill .25s ease}}
+</style>
+
+<div class="wrap">
+<header style="display:flex;flex-direction:column;gap:14px">
+  <div class="eyebrow">MOG · Measured Optimization Geometry · Stage 0–3 results</div>
+  <h1>Which update geometry does each block of a small transformer actually want?</h1>
+  <p class="lede" id="lede"></p>
+  <div class="chips" id="chips"></div>
+</header>
+
+<section>
+  <div class="verdicts" id="verdicts"></div>
+</section>
+
+<section>
+  <div><div class="eyebrow">The network</div><h2>Who optimizes what</h2>
+  <p>Each rectangle is one weight matrix of the 0.82M-parameter model; thin bars are LayerNorm gains. Colour = geometry family, label = the exact update rule. Switch between the hand-designed optimizer arms, the oracle's per-block choice, and what the proxy would have chosen.</p></div>
+  <div class="panel" style="display:flex;flex-direction:column;gap:14px">
+    <div class="row" style="justify-content:space-between">
+      <div class="seg" role="group" aria-label="Diagram view">
+        <button id="v-arm" aria-pressed="true">Optimizer arms</button>
+        <button id="v-oracle" aria-pressed="false">Oracle choice</button>
+        <button id="v-proxy" aria-pressed="false">Proxy choice</button>
+      </div>
+      <div class="row" id="ctl-arm"><label for="armSel">Arm</label><select id="armSel"></select></div>
+      <div class="row" id="ctl-ck" hidden><label for="ckSel">Checkpoint</label><div class="seg" id="ckSeg"></div></div>
+      <div class="row" id="ctl-px" hidden><label for="pxStep">Atlas step</label><input type="range" id="pxStep" min="0" max="0" step="1"><span class="stat" id="pxStepLbl"></span>
+        <div class="seg"><button id="px-same" aria-pressed="true">same-batch</button><button id="px-free" aria-pressed="false">free (PDF)</button></div></div>
+    </div>
+    <div class="legend" id="famLegend"></div>
+    <div class="scroll"><svg id="net" role="img" aria-label="Transformer block diagram coloured by update rule"></svg></div>
+    <p class="note" id="netNote"></p>
+  </div>
+</section>
+
+<section>
+  <div><div class="eyebrow">Performance · matched tokens · 3 evaluation seeds</div><h2>Final validation loss per arm</h2>
+  <p id="perfIntro"></p></div>
+  <div class="grid2">
+    <div class="panel"><h3>Final val loss (nats/char), mean and seed range</h3><div class="scroll"><svg id="dots"></svg></div></div>
+    <div class="panel"><h3 id="curveTitle">Validation loss over training</h3><div class="scroll"><svg id="curves"></svg></div><p class="note">Grey: every other arm. Hover for values.</p></div>
+  </div>
+  <details><summary>Table: every arm, tuned LR, per-seed losses, paired difference vs Muon hybrid</summary><div class="scroll" style="margin-top:10px"><table id="armTable"></table></div></details>
+</section>
+
+<section>
+  <div><div class="eyebrow">Exp 2 · oracle at frozen checkpoints</div><h2>Does any block want a different geometry?</h2>
+  <p id="oracleIntro"></p></div>
+  <div class="grid2">
+    <div class="panel"><h3>Best single-block switch vs incumbent (Δ val loss, 20 steps)</h3><div class="scroll"><svg id="oracleBars"></svg></div><p class="note">Solid bars: gain survived a re-run on a different data stream. Outlined: did not.</p></div>
+    <div class="panel"><h3>Does the proxy predict the oracle?</h3><div class="scroll"><svg id="proxyBars"></svg></div><div class="scroll"><table id="proxyTable"></table></div></div>
+  </div>
+</section>
+
+<section>
+  <div><div class="eyebrow">Exp 1 · geometry atlas</div><h2>What the measurements look like during training</h2><p id="atlasIntro"></p></div>
+  <div class="grid2">
+    <div class="panel"><h3>Momentum effective rank r<sub>eff</sub>/min(m,n) (Muon-hybrid run)</h3><div class="scroll"><svg id="heat"></svg></div></div>
+    <div class="panel"><h3>Free secant ÷ same-batch secant (median over blocks & steps)</h3><div class="scroll"><svg id="ratio"></svg></div><p class="note">≫1 means the PDF's "free" curvature estimate is mostly gradient noise, not curvature.</p></div>
+  </div>
+</section>
+
+<section>
+  <div><div class="eyebrow">Exp 0 · synthetic (not training)</div><h2>Reproducing the PDF's closed-form analysis</h2><p id="synIntro"></p></div>
+  <div class="grid2">
+    <div class="panel"><h3>Gradient-fit θ/C vs spectrum decay β (512×512, 5 seeds)</h3><div class="scroll"><svg id="fit"></svg></div></div>
+    <div class="panel"><h3>PDF §4.3 table vs reproduction</h3><div class="scroll"><table id="synTable"></table></div></div>
+  </div>
+</section>
+
+<section>
+  <div><div class="eyebrow">Reading it honestly</div><h2>What this does and does not show</h2></div>
+  <div class="panel" id="caveats"></div>
+</section>
+
+<section>
+  <div class="eyebrow">Reproduce</div>
+  <pre id="repro"></pre>
+</section>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script id="data" type="application/json">/*DATA*/</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const $ = s => document.querySelector(s);
+const NS = 'http://www.w3.org/2000/svg';
+const FAM = {
+  spectral:{i:1, label:'Spectral (Muon family)'}, adaptive:{i:2, label:'Adaptive elementwise (Adam family)'},
+  norm:{i:3, label:'Row / column norm'}, sign:{i:4, label:'Sign (Signum / Lion)'}, euclid:{i:5, label:'Euclidean (NormSGD / SGD)'}};
+const RULE = {spectral:['spectral','Muon'], spectral_head:['spectral','Muon·head'], normuon:['spectral','NorMuon'], pw05:['spectral','α=½'],
+  adam:['adaptive','Adam'], adam_mini:['adaptive','Adam-mini'], rows:['norm','Rows'], cols:['norm','Cols'],
+  sign:['sign','Sign'], lion:['sign','Lion'], euclid:['euclid','Euclid'], sgd:['euclid','SGD']};
+const ARM_LABEL = {sgd:'SGD (momentum)', adamw:'AdamW', lion:'Lion', adam_mini:'Adam-mini', signum:'Signum (sign on matrices)',
+  normsgd:'Normalized SGD', rownorm:'Row-norm everywhere', muon_all:'Muon on every matrix', muon:'Muon hybrid (folklore)',
+  normuon:'NorMuon hybrid', headmuon:'Per-head Muon', pw05:'Partial whitening α=½', duality:'Duality (PDF §2.2)', scion:'Scion-style',
+  mog_oracle:'MOG · oracle-scheduled'};
+const col = f => `var(--f${FAM[f].i})`, onCol = f => `var(--on${FAM[f].i})`;
+const famOf = r => RULE[r] ? RULE[r][0] : 'adaptive';
+const lbl = r => RULE[r] ? RULE[r][1] : r;
+const fmt = (x,d=3) => x==null||!isFinite(x) ? '—' : (+x).toFixed(d);
+const el = (tag, attrs={}, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+const txt = (parent, x, y, s, attrs={}) => { const t = el('text', {x, y, ...attrs}, parent); t.textContent = s; return t; };
+const tip = $('#tip');
+function showTip(ev, html){ tip.innerHTML = html; tip.hidden = false; const pad=14; let x = ev.clientX+pad, y = ev.clientY+pad;
+  const r = tip.getBoundingClientRect(); if (x + r.width > innerWidth - 8) x = ev.clientX - r.width - pad; if (y + r.height > innerHeight - 8) y = ev.clientY - r.height - pad;
+  tip.style.left = x+'px'; tip.style.top = y+'px'; }
+const hideTip = () => tip.hidden = true;
+function hover(node, fn){ node.addEventListener('mousemove', e => showTip(e, fn())); node.addEventListener('mouseleave', hideTip);
+  node.setAttribute('tabindex','0'); node.addEventListener('focus', e => { const b=node.getBoundingClientRect(); showTip({clientX:b.right, clientY:b.top}, fn()); }); node.addEventListener('blur', hideTip); }
+
+/* ---------- header ---------- */
+const arms = D.arms || {};
+const armNames = Object.keys(arms).sort((a,b) => arms[a].val_mean - arms[b].val_mean);
+(function header(){
+  const chips = ['0.82M params · d=128 · 4 layers · 4 heads', 'char-level Tiny Shakespeare', '600 steps × 2048 tokens', 'CPU only', '1 tuned scalar (LR) per arm'];
+  chips.forEach(c => { const s=document.createElement('span'); s.className='chip'; s.textContent=c; $('#chips').appendChild(s); });
+  $('#lede').innerHTML = D.text.lede;
+  D.text.verdicts.forEach(v => { const d=document.createElement('div'); d.className='verdict';
+    d.innerHTML = `<span class="tag ${v.cls}">${v.tag}</span><div class="big">${v.title}</div><p>${v.body}</p>`; $('#verdicts').appendChild(d); });
+  $('#perfIntro').innerHTML = D.text.perf; $('#oracleIntro').innerHTML = D.text.oracle; $('#atlasIntro').innerHTML = D.text.atlas;
+  $('#synIntro').innerHTML = D.text.synthetic; $('#caveats').innerHTML = D.text.caveats; $('#repro').textContent = D.text.repro;
+  Object.entries(FAM).forEach(([k,f]) => { const s=document.createElement('span'); s.innerHTML = `<i class="sw" style="background:var(--f${f.i})"></i>${f.label}`; $('#famLegend').appendChild(s); });
+})();
+
+/* ---------- network diagram ---------- */
+const net = $('#net');
+const NET = {W:880, H:0};
+const blocksByName = Object.fromEntries(D.network.map(b => [b.name, b]));
+const nLayer = Math.max(...D.network.map(b => b.layer).filter(l => l >= 0 && l < 99)) ;
+function layoutNet(){
+  const L = [], bw=86, bh=38, gap=8, gw=12;
+  const rowH = 74; const top = 40;
+  const layers = D.network.filter(b=>b.kind!=='gain' && b.layer>=0 && b.layer<=nLayer-0 && !['head'].includes(b.kind)).map(b=>b.layer);
+  const nL = Math.max(...D.network.filter(b=>['q','k','v','o','up','down'].includes(b.kind)).map(b=>b.layer)) + 1;
+  let y = top;
+  // head row (top)
+  L.push({name:'head', x:220, y, w:bw*2+gap, h:bh}); L.push({name:'ln_f', x:220 - gw - 10, y, w:gw, h:bh, gain:true});
+  y += rowH;
+  for (let i = nL-1; i >= 0; i--){
+    const yy = y; let x = 100;
+    L.push({name:`L${i}.ln1`, x, y:yy, w:gw, h:bh, gain:true}); x += gw + 10;
+    ['q','k','v','o'].forEach(k => { L.push({name:`L${i}.${k}`, x, y:yy, w:bw, h:bh}); x += bw + gap; });
+    x += 24;
+    L.push({name:`L${i}.ln2`, x, y:yy, w:gw, h:bh, gain:true}); x += gw + 10;
+    ['up','down'].forEach(k => { L.push({name:`L${i}.${k}`, x, y:yy, w:bw, h:bh}); x += bw + gap; });
+    L.push({label:`layer ${i}`, x:18, y:yy + bh/2 + 4});
+    L.push({group:'attention', x:100 + gw + 4, y:yy - 16}); L.push({group:'MLP', x:100 + gw + 10 + 4*(bw+gap) + 24 + gw + 4, y:yy - 16});
+    y += rowH;
+  }
+  L.push({name:'embed', x:220, y, w:bw*1.4, h:bh}); L.push({name:'pos', x:220 + bw*1.4 + gap, y, w:bw*1.4, h:bh});
+  NET.H = y + bh + 30;
+  return L;
+}
+const LAYOUT = layoutNet();
+let view = 'arm', curArm = armNames.includes('muon') ? 'muon' : armNames[0], curCk = null, pxIdx = 0, pxMode = 'same';
+function ruleMap(){
+  if (view === 'arm'){
+    if (curArm === 'mog_oracle' && D.mog_oracle_plan){ const base = {...D.arm_rules.muon}; const first = Object.keys(D.mog_oracle_plan).sort((a,b)=>a-b)[0]; return {...base, ...D.mog_oracle_plan[curCk ?? first]}; }
+    return D.arm_rules[curArm] || {};
+  }
+  if (view === 'oracle'){ const m = {...D.arm_rules.muon}; (D.oracle||[]).filter(c => c.ckpt === curCk).forEach(c => m[c.block] = c.best); return m; }
+  const st = atlasSteps[pxIdx]; const m = {...D.arm_rules.muon};
+  (D.atlas||[]).filter(r => r.arm === 'muon' && r.step === st).forEach(r => { m[r.block] = pxMode === 'same' ? r.argmax_same : r.argmax_free; });
+  return m;
+}
+function blockTip(name, rule){
+  const b = blocksByName[name]; let h = `<b>${name}</b> · ${b.kind} · ${b.shape.join('×')}<br>rule: <b>${lbl(rule)}</b> (${FAM[famOf(rule)].label})`;
+  if (view === 'oracle'){ const c = (D.oracle||[]).find(c => c.ckpt===curCk && c.block===name);
+    if (c){ const g = Object.entries(c.gains).sort((a,b)=>b[1]-a[1]);
+      h += `<br>incumbent: ${lbl(c.incumbent)}<br>` + g.map(([r,v]) => `${lbl(r).padEnd(9)} ${v>=0?'+':''}${(v*1e3).toFixed(2)}e-3`).join('<br>') + `<br>alt-stream gain of best: ${(c.best_gain_alt*1e3).toFixed(2)}e-3`; } }
+  if (view === 'proxy'){ const r = (D.atlas||[]).find(r => r.arm==='muon' && r.step===atlasSteps[pxIdx] && r.block===name);
+    if (r){ const E = pxMode==='same' ? r.Esame : r.Efree; const tot = Object.values(E).reduce((a,b)=>a+b,0);
+      h += '<br>' + Object.entries(E).sort((a,b)=>b[1]-a[1]).map(([k,v]) => `${lbl(k)}: ${(v/tot*100).toFixed(0)}% of score mass`).join('<br>'); } }
+  return h;
+}
+function drawNet(){
+  net.innerHTML = ''; net.setAttribute('viewBox', `0 0 ${NET.W} ${NET.H}`); net.setAttribute('width', NET.W); net.style.maxWidth='100%'; net.style.height='auto';
+  const rm = ruleMap(); const inc = D.arm_rules.muon;
+  // residual stream
+  el('line', {x1:70, x2:70, y1:30, y2:NET.H-20, stroke:'var(--axis)', 'stroke-width':2}, net);
+  txt(net, 76, NET.H-8, 'residual stream ↑', {class:'t-muted'});
+  for (const it of LAYOUT){
+    if (it.label){ txt(net, it.x, it.y, it.label, {class:'t-muted mono'}); continue; }
+    if (it.group){ txt(net, it.x, it.y, it.group, {class:'t-muted'}); continue; }
+    const rule = rm[it.name] || 'adam'; const f = famOf(rule);
+    const g = el('g', {}, net);
+    el('rect', {x:it.x, y:it.y, width:it.w, height:it.h, rx:it.gain?3:6, fill:col(f), class:'blk'}, g);
+    const changed = (view !== 'arm' || curArm === 'mog_oracle') && inc[it.name] && rule !== inc[it.name];
+    if (changed) el('rect', {x:it.x-3, y:it.y-3, width:it.w+6, height:it.h+6, rx:8, fill:'none', stroke:'var(--ink)', 'stroke-width':2}, g);
+    if (!it.gain){
+      const b = blocksByName[it.name];
+      txt(g, it.x+8, it.y+15, it.name.replace(/^L\d\./,''), {style:`fill:${onCol(f)};font-weight:600;font-size:11px`});
+      txt(g, it.x+8, it.y+30, lbl(rule), {style:`fill:${onCol(f)};font-size:11px`, class:'mono'});
+    }
+    hover(g, () => blockTip(it.name, rule));
+  }
+  const notes = {arm: ARM_LABEL[curArm] + (arms[curArm] ? ` — final val ${fmt(arms[curArm].val_mean)} ± ${fmt(arms[curArm].val_std)} (rank ${armNames.indexOf(curArm)+1} of ${armNames.length})` : ''),
+    oracle: `Oracle at step ${curCk}: each block coloured by the rule that most reduced val loss when only that block was switched. Ringed = differs from the Muon-hybrid incumbent.`,
+    proxy: `Proxy at step ${atlasSteps[pxIdx]}: argmax of E_c = θ_c / L̂_c (${pxMode==='same'?'same-batch secant':'free consecutive-batch secant, as in the PDF'}). Ringed = differs from incumbent. Adam is proxied by the sign geometry.`};
+  $('#netNote').textContent = notes[view];
+}
+// controls
+const armSel = $('#armSel');
+[...armNames].forEach(a => { const o = document.createElement('option'); o.value = a; o.textContent = `${ARM_LABEL[a]||a}  ·  ${fmt(arms[a].val_mean)}`; armSel.appendChild(o); });
+Object.keys(D.arm_rules).filter(a => !arms[a]).forEach(a => { const o = document.createElement('option'); o.value=a; o.textContent = ARM_LABEL[a]||a; armSel.appendChild(o); });
+armSel.value = curArm; armSel.onchange = () => { curArm = armSel.value; drawNet(); drawDots(); drawCurves(); };
+const cks = [...new Set((D.oracle||[]).map(c => c.ckpt))].sort((a,b)=>a-b); curCk = cks[0] ?? null;
+cks.forEach(c => { const b = document.createElement('button'); b.textContent = c; b.setAttribute('aria-pressed', c===curCk); b.onclick = () => { curCk = c; [...$('#ckSeg').children].forEach(x => x.setAttribute('aria-pressed', x===b)); drawNet(); }; $('#ckSeg').appendChild(b); });
+const atlasSteps = [...new Set((D.atlas||[]).filter(r=>r.arm==='muon').map(r => r.step))].sort((a,b)=>a-b);
+$('#pxStep').max = Math.max(0, atlasSteps.length-1); $('#pxStep').value = 0; $('#pxStepLbl').textContent = atlasSteps[0] ?? '';
+$('#pxStep').oninput = e => { pxIdx = +e.target.value; $('#pxStepLbl').textContent = atlasSteps[pxIdx]; drawNet(); };
+['same','free'].forEach(m => $('#px-'+m).onclick = () => { pxMode = m; $('#px-same').setAttribute('aria-pressed', m==='same'); $('#px-free').setAttribute('aria-pressed', m==='free'); drawNet(); });
+['arm','oracle','proxy'].forEach(v => $('#v-'+v).onclick = () => { view = v; ['arm','oracle','proxy'].forEach(w => $('#v-'+w).setAttribute('aria-pressed', w===v));
+  $('#ctl-arm').hidden = v!=='arm'; $('#ctl-ck').hidden = v!=='oracle'; $('#ctl-px').hidden = v!=='proxy'; drawNet(); });
+if (!cks.length) $('#v-oracle').disabled = true; if (!atlasSteps.length) $('#v-proxy').disabled = true;
+
+/* ---------- performance: dot plot ---------- */
+function armFam(a){ const r = D.arm_rules[a] || D.arm_rules.muon; return famOf(r['L0.q']); }
+function drawDots(){
+  const svg = $('#dots'); svg.innerHTML=''; const rowH=26, L=178, R=24, T=24, W=480; const H = T + armNames.length*rowH + 30;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('width', W); svg.style.maxWidth='100%'; svg.style.height='auto';
+  const vals = armNames.flatMap(a => Object.values(arms[a].val).filter(v => v!=null && isFinite(v)));
+  let lo = Math.min(...vals), hi = Math.max(...vals); const pad=(hi-lo)*0.06; lo-=pad; hi+=pad;
+  const X = v => L + (v-lo)/(hi-lo)*(W-L-R);
+  const ticks = niceTicks(lo, hi, 5);
+  ticks.forEach(t => { el('line',{x1:X(t),x2:X(t),y1:T-6,y2:H-26,stroke:'var(--grid)'},svg); txt(svg, X(t), H-10, t.toFixed(2), {'text-anchor':'middle', class:'t-muted mono'}); });
+  if (arms.muon){ el('line',{x1:X(arms.muon.val_mean),x2:X(arms.muon.val_mean),y1:T-10,y2:H-26,stroke:'var(--ink2)','stroke-width':1},svg); txt(svg, X(arms.muon.val_mean)+4, T-12, 'Muon hybrid', {class:'t-muted'}); }
+  armNames.forEach((a,i) => { const y = T + i*rowH + rowH/2; const A = arms[a]; const vs = Object.values(A.val).filter(v=>v!=null&&isFinite(v));
+    const sel = a===curArm; const f = armFam(a);
+    const g = el('g',{},svg);
+    el('rect',{x:0,y:y-rowH/2,width:W,height:rowH,fill:sel?'color-mix(in srgb, var(--accent) 9%, transparent)':'transparent'},g);
+    txt(g, L-10, y+4, ARM_LABEL[a]||a, {'text-anchor':'end', class: sel?'t-ink':'', style: sel?'font-weight:600':''});
+    if (vs.length){ el('line',{x1:X(Math.min(...vs)),x2:X(Math.max(...vs)),y1:y,y2:y,stroke:col(f),'stroke-width':2,'stroke-linecap':'round'},g);
+      vs.forEach(v => el('circle',{cx:X(v),cy:y,r:2.5,fill:col(f),opacity:.6},g));
+      el('circle',{cx:X(A.val_mean),cy:y,r:5,fill:col(f),stroke:'var(--surface)','stroke-width':2},g); }
+    else txt(g, L+4, y+4, 'diverged', {class:'t-muted'});
+    hover(g, () => { const vm = A.vs_muon; return `<b>${ARM_LABEL[a]||a}</b><br>LR ${A.lr}<br>val ${fmt(A.val_mean)} ± ${fmt(A.val_std)} (seeds ${Object.keys(A.val).join(', ')})<br>train ${fmt(A.train_mean)}` +
+      (vm ? `<br>vs Muon hybrid: ${vm.mean>=0?'+':''}${fmt(vm.mean,4)} [${fmt(vm.ci95[0],4)}, ${fmt(vm.ci95[1],4)}]` : ''); });
+    g.style.cursor='pointer'; g.addEventListener('click', () => { curArm = a; armSel.value = a; view='arm'; $('#v-arm').click(); drawDots(); drawCurves(); });
+  });
+}
+function niceTicks(lo, hi, n){ const span = hi-lo, step0 = span/n, mag = Math.pow(10, Math.floor(Math.log10(step0))); const err = step0/mag;
+  const step = (err>=7.5?10:err>=3.5?5:err>=1.5?2:1)*mag; const out=[]; for (let t=Math.ceil(lo/step)*step; t<=hi+1e-12; t+=step) out.push(+t.toFixed(10)); return out; }
+
+/* ---------- performance: curves ---------- */
+function drawCurves(){
+  const svg = $('#curves'); svg.innerHTML=''; const W=480,H=320,L=44,R=86,T=14,B=30;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`); svg.setAttribute('width',W); svg.style.maxWidth='100%'; svg.style.height='auto';
+  const all = armNames.flatMap(a => arms[a].curve.map(p => p.val)).filter(v=>v!=null&&isFinite(v));
+  const steps = armNames.flatMap(a => arms[a].curve.map(p=>p.step)); const xmin=Math.min(...steps), xmax=Math.max(...steps);
+  let ylo = Math.min(...all), yhi = Math.min(Math.max(...all), ylo + 1.4);
+  const X = s => L + (s-xmin)/(xmax-xmin)*(W-L-R), Y = v => T + (1 - (Math.min(v,yhi)-ylo)/(yhi-ylo))*(H-T-B);
+  niceTicks(ylo,yhi,5).forEach(t => { el('line',{x1:L,x2:W-R,y1:Y(t),y2:Y(t),stroke:'var(--grid)'},svg); txt(svg, L-6, Y(t)+4, t.toFixed(1), {'text-anchor':'end',class:'t-muted mono'}); });
+  niceTicks(xmin,xmax,5).forEach(t => txt(svg, X(t), H-10, t, {'text-anchor':'middle',class:'t-muted mono'}));
+  const path = pts => pts.filter(p=>p.val!=null).map((p,i) => `${i?'L':'M'}${X(p.step).toFixed(1)},${Y(p.val).toFixed(1)}`).join('');
+  armNames.forEach(a => { if (a===curArm) return; el('path',{d:path(arms[a].curve),fill:'none',stroke:'var(--axis)','stroke-width':1},svg); });
+  const refs = ['adamw','muon'].filter(r => r!==curArm && arms[r]);
+  refs.forEach(r => { const f = armFam(r); el('path',{d:path(arms[r].curve),fill:'none',stroke:col(f),'stroke-width':1.5,opacity:.55},svg); const last = arms[r].curve.at(-1); txt(svg, W-R+6, Y(last.val)+4, ARM_LABEL[r], {class:'t-muted'}); });
+  const A = arms[curArm]; if (A){ const f = armFam(curArm);
+    const band = A.curve.map(p => `${X(p.step)},${Y(p.val_max)}`).concat([...A.curve].reverse().map(p => `${X(p.step)},${Y(p.val_min)}`));
+    el('polygon',{points:band.join(' '),fill:col(f),opacity:.12},svg);
+    el('path',{d:path(A.curve),fill:'none',stroke:col(f),'stroke-width':2,'stroke-linejoin':'round'},svg);
+    const last = A.curve.at(-1); el('circle',{cx:X(last.step),cy:Y(last.val),r:4,fill:col(f),stroke:'var(--surface)','stroke-width':2},svg);
+    txt(svg, W-R+6, Y(last.val)-6, (ARM_LABEL[curArm]||curArm).slice(0,16), {class:'t-ink',style:'font-weight:600'}); }
+  $('#curveTitle').textContent = `Validation loss over training — ${ARM_LABEL[curArm]||curArm}`;
+  const hit = el('rect',{x:L,y:T,width:W-L-R,height:H-T-B,fill:'transparent'},svg); const cross = el('line',{y1:T,y2:H-B,stroke:'var(--ink2)','stroke-width':1,opacity:0},svg);
+  hit.addEventListener('mousemove', e => { const r = svg.getBoundingClientRect(); const sx = (e.clientX - r.left) * W / r.width; const s = xmin + (sx-L)/(W-L-R)*(xmax-xmin);
+    const p = A.curve.reduce((b,q) => Math.abs(q.step-s) < Math.abs(b.step-s) ? q : b); cross.setAttribute('x1',X(p.step)); cross.setAttribute('x2',X(p.step)); cross.setAttribute('opacity',.5);
+    showTip(e, `<b>step ${p.step}</b><br>${ARM_LABEL[curArm]}: val ${fmt(p.val)} (train ${fmt(p.train)})` + refs.map(r => { const q = arms[r].curve.find(q=>q.step===p.step); return q?`<br>${ARM_LABEL[r]}: ${fmt(q.val)}`:''; }).join('')); });
+  hit.addEventListener('mouseleave', () => { cross.setAttribute('opacity',0); hideTip(); });
+}
+
+/* ---------- arm table ---------- */
+(function armTable(){
+  const t = $('#armTable'); const seeds = [...new Set(armNames.flatMap(a => Object.keys(arms[a].val)))].sort();
+  t.innerHTML = `<tr><th>Arm</th><th>Rule on q (hidden)</th><th class="num">LR</th>${seeds.map(s=>`<th class="num">seed ${s}</th>`).join('')}<th class="num">mean</th><th class="num">Δ vs Muon [95% CI]</th></tr>` +
+    armNames.map(a => { const A = arms[a], vm = A.vs_muon; const r = (D.arm_rules[a]||D.arm_rules.muon)['L0.q'];
+      return `<tr><td>${ARM_LABEL[a]||a}</td><td>${lbl(r)}</td><td class="num">${A.lr}</td>${seeds.map(s=>`<td class="num">${fmt(A.val[s],4)}</td>`).join('')}<td class="num">${fmt(A.val_mean,4)}</td><td class="num">${vm?`${vm.mean>=0?'+':''}${fmt(vm.mean,4)} [${fmt(vm.ci95[0],4)}, ${fmt(vm.ci95[1],4)}]`:'—'}</td></tr>`; }).join('');
+})();
+
+/* ---------- oracle bars ---------- */
+(function oracleBars(){
+  const svg = $('#oracleBars'); const O = D.oracle || []; if (!O.length){ svg.outerHTML = '<p class="note">Oracle not run.</p>'; return; }
+  const cells = O.map(c => ({...c, g: c.gains[c.best]})).sort((a,b) => a.ckpt-b.ckpt || b.g-a.g);
+  const rowH=13, L=112, R=70, T=20, W=480; const groups = [...new Set(cells.map(c=>c.ckpt))]; const H = T + cells.length*rowH + groups.length*18 + 24;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`); svg.setAttribute('width',W); svg.style.maxWidth='100%'; svg.style.height='auto';
+  const gmax = Math.max(...cells.map(c=>c.g), 1e-9); const X = v => L + Math.max(0,v)/gmax*(W-L-R);
+  let y = T; groups.forEach(ck => { txt(svg, 0, y+10, `step ${ck}`, {class:'t-ink',style:'font-weight:600'}); y += 16;
+    cells.filter(c=>c.ckpt===ck).forEach(c => { const f = famOf(c.best), stable = c.best !== c.incumbent && c.best_gain_alt > 0;
+      const g = el('g',{},svg); txt(g, L-8, y+rowH-3, c.block, {'text-anchor':'end',class:'mono',style:'font-size:10px'});
+      if (c.best === c.incumbent) txt(g, L+4, y+rowH-3, 'incumbent is best', {class:'t-muted',style:'font-size:10px'});
+      else { const w = Math.max(2, X(c.g)-L); el('rect',{x:L,y:y+2,width:w,height:rowH-4,rx:2,fill:stable?col(f):'none',stroke:col(f),'stroke-width':1.2},g);
+        txt(g, L+w+5, y+rowH-3, lbl(c.best), {style:'font-size:10px'}); }
+      hover(g, () => blockTip2(c)); y += rowH; }); y += 2; });
+  txt(svg, L, H-6, '0', {class:'t-muted mono'}); txt(svg, W-R, H-6, `${(gmax*1e3).toFixed(1)}e-3 nats`, {'text-anchor':'end',class:'t-muted mono'});
+})();
+function blockTip2(c){ const g = Object.entries(c.gains).sort((a,b)=>b[1]-a[1]);
+  return `<b>${c.block}</b> @ step ${c.ckpt}<br>incumbent ${lbl(c.incumbent)} · best ${lbl(c.best)}<br>` + g.map(([r,v]) => `${lbl(r)}: ${v>=0?'+':''}${(v*1e3).toFixed(2)}e-3`).join('<br>') + `<br>best on alt stream: ${(c.best_gain_alt*1e3).toFixed(2)}e-3`; }
+
+/* ---------- proxy validation ---------- */
+(function proxy(){
+  const S = D.oracle_summary; const svg = $('#proxyBars'); if (!S){ svg.outerHTML=''; return; }
+  const P = S.proxies; const names = {free:'E_c free (PDF)', same:'E_c same-batch', own:'E_c own-direction', fit:'θ/C only', lookahead:'1-step lookahead'};
+  const keys = Object.keys(names).filter(k => P[k]); const W=480,rowH=30,L=150,R=30,T=26,H=T+keys.length*rowH+30;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`); svg.setAttribute('width',W); svg.style.maxWidth='100%'; svg.style.height='auto';
+  const X = v => L + (v+1)/2*(W-L-R);
+  [-1,-0.5,0,0.5,1].forEach(t => { el('line',{x1:X(t),x2:X(t),y1:T-6,y2:H-24,stroke:t===0?'var(--axis)':'var(--grid)'},svg); txt(svg,X(t),H-8,t,{'text-anchor':'middle',class:'t-muted mono'}); });
+  el('line',{x1:X(0.7),x2:X(0.7),y1:T-10,y2:H-24,stroke:'var(--good)','stroke-width':1},svg); txt(svg,X(0.7),T-12,'PDF target 0.7',{'text-anchor':'middle',class:'t-muted'});
+  keys.forEach((k,i) => { const p = P[k], y = T + i*rowH + rowH/2; const g = el('g',{},svg);
+    txt(g, L-10, y+4, names[k], {'text-anchor':'end'});
+    el('line',{x1:X(p.spearman_iqr[0]),x2:X(p.spearman_iqr[1]),y1:y,y2:y,stroke:'var(--f1)','stroke-width':2,'stroke-linecap':'round'},g);
+    el('circle',{cx:X(p.spearman_median),cy:y,r:5,fill:'var(--f1)',stroke:'var(--surface)','stroke-width':2},g);
+    hover(g, () => `<b>${names[k]}</b><br>median Spearman ρ ${fmt(p.spearman_median,2)} (IQR ${fmt(p.spearman_iqr[0],2)}–${fmt(p.spearman_iqr[1],2)})<br>top-1 agreement ${(p.top1_agreement*100).toFixed(0)}% vs chance ${(p.top1_chance*100).toFixed(0)}%<br>n = ${p.n_blocks} (checkpoint, block) pairs`); });
+  $('#proxyTable').innerHTML = `<tr><th>Proxy</th><th class="num">median ρ</th><th class="num">top-1</th><th class="num">chance</th><th class="num">mean regret</th></tr>` +
+    keys.map(k => `<tr><td>${names[k]}</td><td class="num">${fmt(P[k].spearman_median,2)}</td><td class="num">${(P[k].top1_agreement*100).toFixed(0)}%</td><td class="num">${(P[k].top1_chance*100).toFixed(0)}%</td><td class="num">${(P[k].mean_regret*1e3).toFixed(2)}e-3</td></tr>`).join('');
+})();
+
+/* ---------- atlas heatmap ---------- */
+(function heat(){
+  const svg = $('#heat'); const A = (D.atlas||[]).filter(r => r.arm==='muon'); if (!A.length){ svg.outerHTML='<p class="note">Atlas not run.</p>'; return; }
+  const steps = [...new Set(A.map(r=>r.step))].sort((a,b)=>a-b); const blocks = D.network.filter(b => b.kind!=='gain').map(b=>b.name);
+  const cw = Math.max(18, Math.floor(330/steps.length)), ch=12, L=70, T=10, W = L + steps.length*cw + 10, H = T + blocks.length*ch + 60;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`); svg.setAttribute('width',W); svg.style.maxWidth='100%'; svg.style.height='auto';
+  const seq = ['--seq0','--seq1','--seq2','--seq3','--seq4']; const vals = A.map(r=>r.r_eff_frac); const vmax = Math.max(...vals);
+  const bin = v => Math.min(4, Math.floor(v/vmax*5));
+  blocks.forEach((b,i) => { txt(svg, L-6, T+i*ch+ch-2, b, {'text-anchor':'end',class:'mono',style:'font-size:9.5px'});
+    steps.forEach((s,j) => { const r = A.find(r=>r.block===b && r.step===s); if (!r) return;
+      const c = el('rect',{x:L+j*cw+1,y:T+i*ch+1,width:cw-2,height:ch-2,rx:2,fill:`var(${seq[bin(r.r_eff_frac)]})`},svg);
+      hover(c, () => `<b>${b}</b> step ${s}<br>r_eff / min(m,n) = ${fmt(r.r_eff_frac,3)}<br>rule ${lbl(r.rule)}<br>block grad SNR ${fmt(r.snr_block,2)}`); }); });
+  steps.forEach((s,j) => { if (j%2===0) txt(svg, L+j*cw+cw/2, T+blocks.length*ch+14, s, {'text-anchor':'middle',class:'t-muted mono',style:'font-size:9.5px'}); });
+  const ly = T+blocks.length*ch+32; txt(svg, L, ly+10, 'low', {class:'t-muted'}); seq.forEach((c,k) => el('rect',{x:L+28+k*22,y:ly,width:20,height:12,rx:2,fill:`var(${c})`},svg)); txt(svg, L+28+5*22+4, ly+10, `high (${fmt(vmax,2)})`, {class:'t-muted'});
+})();
+
+/* ---------- secant ratio ---------- */
+(function ratio(){
+  const svg = $('#ratio'); const A = (D.atlas||[]); if (!A.length){ svg.outerHTML=''; return; }
+  const geos = ['sign','euclid','rows','cols','spectral','spectral_head','pw05']; const med = xs => { const s=[...xs].sort((a,b)=>a-b); return s[Math.floor(s.length/2)]; };
+  const rows = geos.map(g => ({g, v: med(A.map(r => r.Lratio[g]).filter(x => x!=null && isFinite(x)))})).filter(r => r.v);
+  const W=480,rowH=28,L=110,R=60,T=14,H=T+rows.length*rowH+30; svg.setAttribute('viewBox',`0 0 ${W} ${H}`); svg.setAttribute('width',W); svg.style.maxWidth='100%'; svg.style.height='auto';
+  const vmax = Math.max(...rows.map(r=>r.v), 2); const X = v => L + Math.log(v)/Math.log(vmax*1.2)*(W-L-R);
+  [1,2,5,10,20,50].filter(t=>t<=vmax*1.2).forEach(t => { el('line',{x1:X(t),x2:X(t),y1:T-4,y2:H-24,stroke:t===1?'var(--axis)':'var(--grid)'},svg); txt(svg,X(t),H-8,t+'×',{'text-anchor':'middle',class:'t-muted mono'}); });
+  rows.forEach((r,i) => { const y = T+i*rowH; const f = famOf(r.g);
+    txt(svg, L-8, y+rowH/2+4, lbl(r.g), {'text-anchor':'end'});
+    el('rect',{x:X(1),y:y+6,width:Math.max(2,X(r.v)-X(1)),height:rowH-12,rx:3,fill:col(f)},svg);
+    txt(svg, X(r.v)+6, y+rowH/2+4, r.v.toFixed(1)+'×', {class:'mono'}); });
+})();
+
+/* ---------- synthetic ---------- */
+(function syn(){
+  const E = D.exp000; if (!E) return; const svg = $('#fit');
+  const series = [['spectral_full_svd|exact','Full spectral (exact)','spectral'],['spectral_full_ns|ns_float32','Full spectral (Muon NS, fp32)','spectral'],['rows|exact','Per-neuron rows','norm'],['elementwise|exact','Elementwise','sign']];
+  const W=480,H=300,L=46,R=150,T=14,B=30; svg.setAttribute('viewBox',`0 0 ${W} ${H}`); svg.setAttribute('width',W); svg.style.maxWidth='100%'; svg.style.height='auto';
+  const betas = Object.keys(E.fig1b['rows|exact']).map(Number); const X = b => L + b/1.5*(W-L-R); const Y = v => T + (1 - (Math.log10(v)+2.1)/2.1)*(H-T-B);
+  [0.01,0.1,1].forEach(t => { el('line',{x1:L,x2:W-R,y1:Y(t),y2:Y(t),stroke:'var(--grid)'},svg); txt(svg,L-6,Y(t)+4,t,{'text-anchor':'end',class:'t-muted mono'}); });
+  [0,0.5,1,1.5].forEach(t => txt(svg,X(t),H-10,t,{'text-anchor':'middle',class:'t-muted mono'}));
+  series.forEach(([k,name,f],i) => { const d = E.fig1b[k]; if (!d) return; const pts = betas.map(b => [X(b), Y(d[String(b)] ?? d[b.toFixed(1)] ?? d[b])]);
+    el('path',{d:pts.map((p,j)=>`${j?'L':'M'}${p[0]},${p[1]}`).join(''),fill:'none',stroke:col(f),'stroke-width':2,'stroke-dasharray':k.includes('ns')?'5 4':'none'},svg);
+    const last = pts.at(-1); el('circle',{cx:last[0],cy:last[1],r:4,fill:col(f),stroke:'var(--surface)','stroke-width':2},svg);
+    txt(svg, last[0]+8, last[1]+4 + (k.includes('ns')?10:0) - (k.startsWith('spectral_full_svd')?4:0), name, {}); });
+  txt(svg, (W-R+L)/2, H-0, 'β (σ_i ∝ i^-β)', {'text-anchor':'middle',class:'t-muted'});
+  const t = $('#synTable'); t.innerHTML = `<tr><th class="num">β</th><th>column</th><th class="num">PDF</th><th class="num">ours (mean ± sd)</th></tr>` +
+    E.table.flatMap(r => [['r_eff','r_eff'],['full spectral','spectral_full_svd','full_spectral'],['rows','rows','rows'],['elementwise','elementwise','elementwise']].map(([n,k,pk]) =>
+      `<tr><td class="num">${r.beta}</td><td>${n}</td><td class="num">${r.pdf[pk||k]}</td><td class="num">${fmt(r[k].mean,4)} ± ${fmt(r[k].std,4)}</td></tr>`)).join('');
+})();
+
+drawNet(); drawDots(); drawCurves();
+</script>

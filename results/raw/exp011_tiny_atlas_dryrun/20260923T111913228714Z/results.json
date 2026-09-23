@@ -1,0 +1,111 @@
+{
+  "command": "python -m scripts.run_experiment --config configs/tiny/exp011_atlas_dryrun.yaml",
+  "error": null,
+  "evidence_class": "pilot",
+  "experiment_id": "exp011_tiny_atlas_dryrun",
+  "git_commit": "365de926bfbf2bde6445e56b4a2c8e6da0817074",
+  "git_dirty": true,
+  "seed": 0,
+  "status": "ok",
+  "summary": {
+    "adamw": {
+      "diverged": false,
+      "final_train": 2.27655433177948,
+      "final_val": 2.322335958480835,
+      "history": [
+        {
+          "lr": 0.009890480260828964,
+          "step": 50,
+          "train_loss": 2.9844292974472046,
+          "val_loss": 2.6409270763397217,
+          "wall_s": 1.32
+        },
+        {
+          "lr": 0.008625962667065487,
+          "step": 100,
+          "train_loss": 2.5572328042984007,
+          "val_loss": 2.5681886672973633,
+          "wall_s": 2.97
+        },
+        {
+          "lr": 0.006332927153701215,
+          "step": 150,
+          "train_loss": 2.491533079147339,
+          "val_loss": 2.5138317942619324,
+          "wall_s": 4.88
+        },
+        {
+          "lr": 0.003765838302358984,
+          "step": 200,
+          "train_loss": 2.4206343698501587,
+          "val_loss": 2.4322685599327087,
+          "wall_s": 6.5
+        },
+        {
+          "lr": 0.0017693309235023128,
+          "step": 250,
+          "train_loss": 2.330396127700806,
+          "val_loss": 2.378933370113373,
+          "wall_s": 8.13
+        },
+        {
+          "lr": 0.0010003046139830702,
+          "step": 300,
+          "train_loss": 2.27655433177948,
+          "val_loss": 2.322335958480835,
+          "wall_s": 10.29
+        }
+      ]
+    },
+    "muon": {
+      "diverged": false,
+      "final_train": 2.0311281180381773,
+      "final_val": 2.1149649620056152,
+      "history": [
+        {
+          "lr": 0.009890480260828964,
+          "step": 50,
+          "train_loss": 2.949057626724243,
+          "val_loss": 2.581002414226532,
+          "wall_s": 2.63
+        },
+        {
+          "lr": 0.008625962667065487,
+          "step": 100,
+          "train_loss": 2.480988130569458,
+          "val_loss": 2.4538174271583557,
+          "wall_s": 4.93
+        },
+        {
+          "lr": 0.006332927153701215,
+          "step": 150,
+          "train_loss": 2.3653025913238523,
+          "val_loss": 2.3569859862327576,
+          "wall_s": 7.6
+        },
+        {
+          "lr": 0.003765838302358984,
+          "step": 200,
+          "train_loss": 2.223727140426636,
+          "val_loss": 2.2385101914405823,
+          "wall_s": 10.97
+        },
+        {
+          "lr": 0.0017693309235023128,
+          "step": 250,
+          "train_loss": 2.094643156528473,
+          "val_loss": 2.15863436460495,
+          "wall_s": 16.77
+        },
+        {
+          "lr": 0.0010003046139830702,
+          "step": 300,
+          "train_loss": 2.0311281180381773,
+          "val_loss": 2.1149649620056152,
+          "wall_s": 19.74
+        }
+      ]
+    }
+  },
+  "wall_time_s": 30.362
+}

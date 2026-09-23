@@ -1,0 +1,12 @@
+experiment_id: exp012_tiny_oracle_dryrun
+entry: experiments/03_oracle/oracle.py
+evidence_class: pilot
+description: Oracle rollouts + proxy scoring at the exp011 checkpoints (~0.11M model).
+seed: 0
+source_run: latest:exp011_tiny_atlas_dryrun
+checkpoints:
+- 100
+- 200
+horizon: 20
+data_seed: 777
+data_seed_alt: 778

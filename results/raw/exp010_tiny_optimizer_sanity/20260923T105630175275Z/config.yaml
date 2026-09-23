@@ -1,0 +1,42 @@
+experiment_id: exp010_tiny_optimizer_sanity
+entry: experiments/sweep.py
+evidence_class: pilot
+description: 'Every arm in configs/arms.yaml on a ~0.11M-param char transformer, 5-point
+  LR grid per family, 2 seeds, 300 steps. Checks that every rule trains stably somewhere
+  on its grid and locates the grid centre for the 1M tuning sweep.
+
+  '
+seed: 0
+arms_file: configs/arms.yaml
+arms:
+- sgd
+- adamw
+- lion
+- adam_mini
+- signum
+- normsgd
+- rownorm
+- muon_all
+- muon
+- normuon
+- headmuon
+- pw05
+- duality
+- scion
+lr: grid
+seeds:
+- 0
+- 1
+train:
+  model:
+    d: 64
+    n_layer: 2
+    n_head: 2
+    ctx: 64
+  batch_size: 16
+  steps: 300
+  warmup: 30
+  min_lr_frac: 0.1
+  eval_every: 50
+  eval_batches: 4
+  threads: 4

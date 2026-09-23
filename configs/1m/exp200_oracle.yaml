@@ -1,0 +1,12 @@
+experiment_id: exp200_oracle_1m
+entry: experiments/03_oracle/oracle.py
+evidence_class: measured
+description: >
+  Oracle geometry per block (single-block switch, h=20 steps, constant checkpoint LR) at steps
+  100/300/500 of the exp100 muon seed-0 run; proxy validation (H1, H2). Pre-registered in EXPERIMENT_LOG.
+seed: 0
+source_run: latest:exp100_atlas_1m
+checkpoints: [100, 300, 500]
+horizon: 20
+data_seed: 777
+data_seed_alt: 778

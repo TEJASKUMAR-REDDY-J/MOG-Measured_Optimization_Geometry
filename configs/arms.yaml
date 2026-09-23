@@ -1,0 +1,26 @@
+# Optimizer arms = rule assignment per block (see mog/optim/blockwise.py for rule definitions).
+# Keys resolve by priority: block name > kind > attn/mlp > hidden > matrix > default.
+# LR family decides the tuning grid (lr_grids below). One tuned scalar (lr) per arm.
+arms:
+  # --- homogeneous classic optimizers (every parameter, incl. 1-D gains) ---
+  sgd:        {family: sgd,  rules: {default: sgd}}
+  adamw:      {family: adam, rules: {default: adam}}
+  lion:       {family: lion, rules: {default: lion}}
+  adam_mini:  {family: adam, rules: {default: adam_mini}}
+  # --- single geometry on every 2-D block (1-D gains -> adam) ---
+  signum:     {family: adam, rules: {matrix: sign, default: adam}}        # elementwise corner
+  normsgd:    {family: adam, rules: {matrix: euclid, default: adam}}      # Euclidean corner
+  rownorm:    {family: adam, rules: {matrix: rows, default: adam}}        # per-neuron / per-token corner
+  muon_all:   {family: adam, rules: {matrix: spectral, default: adam}}    # spectral everywhere
+  # --- hybrids from practice and literature ---
+  muon:       {family: adam, rules: {hidden: spectral, default: adam}}    # folklore: Muon hidden, AdamW rest
+  normuon:    {family: adam, rules: {hidden: normuon, default: adam}}     # NorMuon (arXiv:2510.05491) hidden
+  headmuon:   {family: adam, rules: {attn: spectral_head, mlp: spectral, default: adam}}  # per-head grouping (PDF §3.2, H4)
+  pw05:       {family: adam, rules: {hidden: pw05, default: adam}}        # partial whitening alpha=1/2 (PDF §3.1)
+  duality:    {family: adam, rules: {hidden: spectral, embed: rows, pos: rows, head: rows, default: adam}}  # PDF §2.2 per-token vocab rows (H5-style)
+  scion:      {family: adam, rules: {hidden: spectral, embed: rows, pos: rows, head: sign, default: adam}}  # Scion Rec. 3.1 (ColNorm in, Sign out)
+
+lr_grids:   # Stage-2 (tiny) grids: 5 points per family, x~3.16 spacing
+  adam: [0.001, 0.003, 0.01, 0.03, 0.1]
+  lion: [0.0001, 0.0003, 0.001, 0.003, 0.01]
+  sgd:  [0.03, 0.1, 0.3, 1.0, 3.0]

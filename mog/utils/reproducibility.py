@@ -43,7 +43,8 @@ def _git(*args: str) -> str | None:
 
 
 def environment_info() -> dict:
-    status = _git("status", "--porcelain")
+    # results/ is excluded: the run's own output dir exists before this is called
+    status = _git("status", "--porcelain", "--", ".", ":(exclude)results")
     return {
         "timestamp_utc": _dt.datetime.now(_dt.timezone.utc).isoformat(timespec="seconds"),
         "python": sys.version.split()[0],

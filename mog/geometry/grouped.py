@@ -19,6 +19,23 @@ class GroupedSpectral(Spectral):
         super().__init__(k=k, axis=axis, **kw)
 
 
+class PermutedGroupedSpectral(GroupedSpectral):
+    """Grouped spectral over a fixed permutation of rows (or cols): groups of the same size
+    k, but with membership ignoring the architecture. The random-partition control for H4."""
+
+    def __init__(self, k: int, perm: torch.Tensor, axis: str = "rows", **kw):
+        super().__init__(k=k, axis=axis, **kw)
+        self.perm, self.inv = perm, torch.argsort(perm)
+        self._dim = -2 if axis == "rows" else -1
+        self.name += "_perm"
+
+    def _to_blocks(self, B):
+        return super()._to_blocks(B.index_select(self._dim, self.perm))
+
+    def _from_blocks(self, X, like):
+        return super()._from_blocks(X, like).index_select(self._dim, self.inv)
+
+
 def per_head(weight_shape: torch.Size, n_head: int, kind: str) -> GroupedSpectral:
     """Per-head blocks for attention projections: q/k/v group output rows, o groups input columns."""
     if kind == "o":

@@ -138,3 +138,33 @@ Seed policy: seed 0 is used only for LR tuning, the atlas and the oracle. Every 
   3. The random-partition control for H4.
   4. A realistic tokenizer for H5.
 - The robust finding here is the well-known one: spectral geometry on hidden weights ≫ elementwise geometry at this scale.
+
+---
+
+## Redesign pre-registration (written 2026-09-24, before any redesign run)
+All of these are additive: they use new experiment IDs and only *read* the earlier runs. Configs are in `configs/redesign/`, and the chain is `bash scripts/run_redesign.sh`. Setup matches Stage 3 unless stated otherwise.
+
+### exp400 + exp410: H2′, the own-direction secant proxy (exploratory in exp200, now a test)
+- A fresh incumbent (Muon hybrid at lr 0.01, **new seed 4**) writes checkpoints at 100/300/500. The exp200 oracle code runs on them with **fresh data streams** 787/788 and h=20.
+- **SUPPORTED** if the own-direction proxy has median Spearman ρ ≥ 0.5 **and** a top-1 agreement above chance (one-sided binomial p < 0.05).
+- **FALSIFIED** if median ρ ≤ 0.3 or top-1 agreement is not above chance. Anything in between is INCONCLUSIVE.
+- Caveat stated up front: this proxy is not "free". It costs one extra backward per candidate per block.
+
+### exp420: additivity and horizon of oracle switches
+- Uses the exp200 stable switches and the exp100 checkpoints, read-only, on a fresh stream 779 at horizons h ∈ {20, 100}.
+- Additivity holds if the joint gain is > 0 and ≥ 0.5 × the sum of the individual gains.
+- Horizon persistence is the fraction of individual gains still positive at h=100.
+- Reported per checkpoint. With only 3 checkpoints, no significance claim is made.
+
+### exp430 + exp431: H4 random-partition control
+- `randpart` uses head-sized groups (k = d/H) on attention with a fixed random row/column membership per block. Its LR is tuned on seed 0 with the same 3-point rule, then it is evaluated on seeds 1–3.
+- Compared pairwise with the exp160 `headmuon` and `muon` runs (same seeds, same code paths).
+- The symmetry-matching part of H4 is **SUPPORTED** if headmuon < randpart with a 95% CI excluding 0. It is **FALSIFIED** if the CI includes 0 or randpart is better.
+- The other clause of H4 ("beats whole-matrix Muon") already failed in exp160.
+
+### exp440: H5 on a real rare-token regime
+- GPT-2 BPE remapped to the corpus (~11.7k types, 3.6k singletons), about 3.8M params, 300 steps (~2 epochs), 16 eval batches.
+- Arms: `muon` (Adam on embed/pos/head) vs `duality` (per-token rows on embed/pos/head). The hidden weights are identical.
+- Each arm's LR is tuned on seed 0 over {0.0033, 0.01, 0.03}, then evaluated on seeds 1–3.
+- **SUPPORTED** if duality < muon with a paired 95% CI excluding 0 **and** the mean gain in the rarest train-frequency decile of target tokens exceeds the gain in the most frequent decile.
+- **FALSIFIED** if there is no gain (CI includes 0 or duality is worse), or if the gain is not larger on rare tokens.

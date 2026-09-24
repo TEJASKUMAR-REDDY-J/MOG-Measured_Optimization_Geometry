@@ -125,3 +125,16 @@ def test_ns_cost_matches_pdf_scaling():
     assert cost == pytest.approx((m // k) * T * (4 * k * k * n + 2 * k**3))
     assert cost / (4 * T * k * m * n) == pytest.approx(1 + k / (2 * n))
     assert math.isclose(Spectral(k=1).cost(torch.Size([m, n])) / Spectral(k=2).cost(torch.Size([m, n])), 0.5, rel_tol=0.01)
+
+
+def test_permuted_grouping_is_grouped_spectral_on_permuted_rows():
+    from mog.geometry.grouped import GroupedSpectral, PermutedGroupedSpectral
+    B = torch.randn(8, 12, dtype=DT)
+    ident = PermutedGroupedSpectral(4, torch.arange(8), method="svd")
+    assert torch.allclose(ident.lmo(B), GroupedSpectral(4, method="svd").lmo(B))
+    perm = torch.randperm(8, generator=torch.Generator().manual_seed(0))
+    g = PermutedGroupedSpectral(4, perm, method="svd")
+    D = g.lmo(B)
+    assert torch.allclose(D[perm], GroupedSpectral(4, method="svd").lmo(B[perm]))
+    assert g.norm(D).item() == pytest.approx(1.0, rel=1e-9)
+    assert (B * D).sum().item() == pytest.approx(g.exact_dual_norm(B).item(), rel=1e-9)

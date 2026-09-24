@@ -1,0 +1,14 @@
+experiment_id: exp410_h2prime_oracle
+entry: experiments/03_oracle/oracle.py
+evidence_class: measured
+description: 'H2'' pre-registered test of the own-direction proxy: same oracle as
+  exp200 on fresh checkpoints (seed 4) and fresh data streams.'
+seed: 4
+source_run: latest:exp400_h2prime_ckpts
+checkpoints:
+- 100
+- 300
+- 500
+horizon: 20
+data_seed: 787
+data_seed_alt: 788

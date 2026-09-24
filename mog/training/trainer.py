@@ -16,18 +16,17 @@ from typing import Callable
 
 import torch
 
-from mog.data import CharData
+from mog.data import BPEData, CharData
 from mog.models.tiny_transformer import GPT, GPTConfig, blocks
 from mog.optim.blockwise import BlockOptimizer, resolve_rules
 
-_DATA: CharData | None = None
+_DATA: dict[str, CharData] = {}
 
 
-def get_data() -> CharData:
-    global _DATA
-    if _DATA is None:
-        _DATA = CharData()
-    return _DATA
+def get_data(name: str = "char") -> CharData:
+    if name not in _DATA:
+        _DATA[name] = BPEData() if name == "bpe" else CharData()
+    return _DATA[name]
 
 
 def lr_at(step: int, cfg: dict) -> float:
@@ -66,7 +65,7 @@ def train(cfg: dict, run_dir: Path | None = None, callback: Callable | None = No
     callback(step, model, bl, opt, batch): called after backward, before the update.
     """
     torch.set_num_threads(cfg.get("threads", 2))
-    data = get_data()
+    data = get_data(cfg.get("data", "char"))
     model, bl, opt = build(cfg, data)
     s0 = 0
     if start is not None:

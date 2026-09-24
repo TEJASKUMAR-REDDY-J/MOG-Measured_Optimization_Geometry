@@ -104,6 +104,14 @@ def main(mode):
                 "description": "Oracle-scheduled MOG arm at its tuned LR, evaluation seeds 1-3 (H1 test vs exp160).",
                 "seed": 1, "arms_file": "configs/arms.yaml", "arms": ["mog_oracle"],
                 "lr": {"mog_oracle": [min(c, key=c.get)]}, "seeds": [1, 2, 3], "mog_oracle": mog, "train": TRAIN_1M})
+    elif mode == "h4_eval":
+        f, _ = sweep_summary(latest("exp430_h4_randpart_tuning"))
+        c = {lr: d[0][0] for (arm, lr), d in f.items() if np.isfinite(d[0][0])}
+        dump(REPO_ROOT / "configs/redesign/exp431_h4_randpart.yaml", {
+            "experiment_id": "exp431_h4_randpart", "entry": "experiments/sweep.py", "evidence_class": "measured",
+            "description": "H4 control at its tuned LR, seeds 1-3; compared pairwise with exp160 headmuon and muon.",
+            "seed": 1, "arms_file": "configs/arms.yaml", "arms": ["randpart"],
+            "lr": {"randpart": [min(c, key=c.get)]}, "seeds": [1, 2, 3], "train": TRAIN_1M})
 
 
 if __name__ == "__main__":

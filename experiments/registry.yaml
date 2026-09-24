@@ -13,3 +13,9 @@
 - {id: exp160_1m_baselines, stage: 3, config: configs/1m/exp160_baselines.yaml, evidence_class: measured, hypotheses: [H4], status: done}   # first attempt aborted (ABORTED.txt), re-run in full
 - {id: exp300_mog_1m, stage: 3, config: configs/1m/exp300_mog.yaml, evidence_class: measured, hypotheses: [H1], status: done}
 - {id: exp_online_proxy_selector, stage: 3, evidence_class: measured, hypotheses: [H1, H7], status: cancelled}   # NO-GO: exp200 falsified H2
+- {id: exp400_h2prime_ckpts, stage: 3, config: configs/redesign/exp400_h2prime_ckpts.yaml, evidence_class: measured, hypotheses: [H2'], status: ready}
+- {id: exp410_h2prime_oracle, stage: 3, config: configs/redesign/exp410_h2prime_oracle.yaml, evidence_class: measured, hypotheses: [H2'], status: ready}
+- {id: exp420_additivity, stage: 3, config: configs/redesign/exp420_additivity.yaml, evidence_class: measured, hypotheses: [H1], status: ready}
+- {id: exp430_h4_randpart_tuning, stage: 3, config: configs/redesign/exp430_h4_randpart_tuning.yaml, evidence_class: measured, hypotheses: [H4], status: ready}
+- {id: exp431_h4_randpart, stage: 3, config: configs/redesign/exp431_h4_randpart.yaml, evidence_class: measured, hypotheses: [H4], status: ready}
+- {id: exp440_h5_vocab, stage: 3, config: configs/redesign/exp440_h5_vocab.yaml, evidence_class: measured, hypotheses: [H5], status: ready}

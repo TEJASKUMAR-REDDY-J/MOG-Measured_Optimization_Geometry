@@ -1,0 +1,29 @@
+experiment_id: exp430_h4_randpart_tuning
+entry: experiments/sweep.py
+evidence_class: measured
+description: 'H4 control: random-partition grouped spectral on attention (head-sized
+  groups), same 3-point LR rule, seed 0.'
+seed: 0
+arms_file: configs/arms.yaml
+arms:
+- randpart
+lr:
+  randpart:
+  - 0.00333333
+  - 0.01
+  - 0.03
+seeds:
+- 0
+train:
+  model:
+    d: 128
+    n_layer: 4
+    n_head: 4
+    ctx: 128
+  batch_size: 16
+  steps: 600
+  warmup: 60
+  min_lr_frac: 0.1
+  eval_every: 100
+  eval_batches: 8
+  threads: 4

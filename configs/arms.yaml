@@ -18,6 +18,7 @@ arms:
   headmuon:   {family: adam, rules: {attn: spectral_head, mlp: spectral, default: adam}}  # per-head grouping (PDF §3.2, H4)
   pw05:       {family: adam, rules: {hidden: pw05, default: adam}}        # partial whitening alpha=1/2 (PDF §3.1)
   duality:    {family: adam, rules: {hidden: spectral, embed: rows, pos: rows, head: rows, default: adam}}  # PDF §2.2 per-token vocab rows (H5-style)
+  randpart:   {family: adam, rules: {attn: spectral_randgroup, mlp: spectral, default: adam}}  # H4 control: random groups, head-sized
   scion:      {family: adam, rules: {hidden: spectral, embed: rows, pos: rows, head: sign, default: adam}}  # Scion Rec. 3.1 (ColNorm in, Sign out)
 
 lr_grids:   # Stage-2 (tiny) grids: 5 points per family, x~3.16 spacing

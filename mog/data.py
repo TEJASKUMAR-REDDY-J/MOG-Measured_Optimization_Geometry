@@ -46,3 +46,21 @@ class CharData:
 
     def eval_batches(self, n: int, B: int, T: int):
         return [self.batch("val", i, B, T, EVAL_STREAM) for i in range(n)]
+
+
+class BPEData(CharData):
+    """Same text, GPT-2 BPE (tiktoken) remapped to the dense set of token ids that occur in
+    it (~11.7k types, heavy-tailed). Used for H5, which needs a realistic rare-token regime."""
+
+    def __init__(self, path: Path = DATA_PATH, val_frac: float = 0.1):
+        import tiktoken
+
+        raw = Path(path).read_bytes()
+        if hashlib.sha256(raw).hexdigest() != DATA_SHA256:
+            raise ValueError(f"{path} does not match the recorded SHA-256; re-download from {DATA_URL}")
+        ids = torch.tensor(tiktoken.get_encoding("gpt2").encode(raw.decode("utf-8")), dtype=torch.long)
+        types, data = torch.unique(ids, return_inverse=True)
+        self.vocab = len(types)
+        n = int(len(data) * (1 - val_frac))
+        self.split = {"train": data[:n], "val": data[n:]}
+        self.token_counts = torch.bincount(self.split["train"], minlength=self.vocab)

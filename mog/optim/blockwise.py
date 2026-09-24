@@ -22,13 +22,14 @@ Weight decay is 0 for all rules (one less tuned knob; documented in the protocol
 from __future__ import annotations
 
 import math
+import zlib
 
 import torch
 
 from mog.geometry import Elementwise, Euclidean, RowNorm, Spectral, newton_schulz
 
 NATIVE = ("sgd", "adam", "adam_mini", "lion")
-LMO = ("sign", "euclid", "rows", "cols", "spectral", "spectral_head", "pw05", "normuon")
+LMO = ("sign", "euclid", "rows", "cols", "spectral", "spectral_head", "pw05", "normuon", "spectral_randgroup")
 RULES = NATIVE + LMO
 MATRIX_KINDS = ("embed", "pos", "q", "k", "v", "o", "up", "down", "head")
 HIDDEN = ("q", "k", "v", "o", "up", "down")
@@ -53,6 +54,14 @@ def geometry_for(rule: str, block: dict):
         if kind not in ATTN:
             raise ValueError("spectral_head only applies to attention projections")
         return Spectral(k=shape[1] // H, axis="cols") if kind == "o" else Spectral(k=shape[0] // H)
+    if rule == "spectral_randgroup":  # H4 control: head-sized groups, random membership (fixed per block)
+        if kind not in ATTN:
+            raise ValueError("spectral_randgroup only applies to attention projections")
+        from mog.geometry.grouped import PermutedGroupedSpectral
+
+        axis, n = ("cols", shape[1]) if kind == "o" else ("rows", shape[0])
+        perm = torch.randperm(n, generator=torch.Generator().manual_seed(zlib.crc32(block["name"].encode())))
+        return PermutedGroupedSpectral(k=n // H, perm=perm, axis=axis)
     raise ValueError(rule)
 
 

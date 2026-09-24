@@ -16,4 +16,5 @@ commit_cfgs "Add Phase 0 evaluation configs from tuned LRs"
 run configs/pivot/exp502_p0_eval.yaml
 run configs/pivot/exp505_p0_oracle_units.yaml
 run configs/pivot/exp512_p0_bpe_eval.yaml
+run configs/pivot/exp509_p0_analysis.yaml
 echo P0_DONE

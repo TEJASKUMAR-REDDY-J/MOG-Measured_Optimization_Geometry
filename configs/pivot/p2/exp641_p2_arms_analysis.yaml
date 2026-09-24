@@ -1,0 +1,11 @@
+experiment_id: exp641_p2_arms_analysis
+entry: experiments/09_paradigms/analyze_arms.py
+evidence_class: measured
+description: 'Phase 2 end-to-end readings per paradigm (margin 10% of the adamw-muon gap) and the H5/H6/H7 mechanism readouts.'
+seed: 0
+studies:
+  supervised: {eval: latest:exp602_p2_sup_eval, margin: rel10}
+  ssl: {eval: latest:exp612_p2_ssl_eval, margin: rel10, h6: true}
+  flow: {eval: latest:exp622_p2_flow_eval, margin: rel10, h7: true}
+  rl: {eval: latest:exp632_p2_rl_eval, margin: rel10}
+h5: {stats: latest:exp635_p2_rl_stats, oracle: latest:exp634_p2_rl_oracle}

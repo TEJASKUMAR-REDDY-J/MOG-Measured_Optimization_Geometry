@@ -20,4 +20,5 @@ for t in 600_p2_sup 610_p2_ssl 620_p2_flow 630_p2_rl; do
 done
 run configs/pivot/exp507_p0_lm_block_oracle.yaml
 run configs/pivot/p2/exp640_p2_h1_lopo.yaml
+run configs/pivot/p2/exp641_p2_arms_analysis.yaml
 echo P2_DONE

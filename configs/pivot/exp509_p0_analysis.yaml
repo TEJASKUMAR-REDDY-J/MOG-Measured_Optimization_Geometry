@@ -1,0 +1,8 @@
+experiment_id: exp509_p0_analysis
+entry: experiments/09_paradigms/analyze_arms.py
+evidence_class: measured
+description: 'Phase 0 end-to-end readings (C1-C5, TOST delta 0.02) for char (exp502) and BPE (exp512).'
+seed: 0
+studies:
+  lm_char: {eval: latest:exp502_p0_eval, margin: 0.02}
+  lm_bpe: {eval: latest:exp512_p0_bpe_eval, margin: 0.02}

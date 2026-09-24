@@ -168,3 +168,14 @@ All of these are additive: they use new experiment IDs and only *read* the earli
 - Each arm's LR is tuned on seed 0 over {0.0033, 0.01, 0.03}, then evaluated on seeds 1–3.
 - **SUPPORTED** if duality < muon with a paired 95% CI excluding 0 **and** the mean gain in the rarest train-frequency decile of target tokens exceeds the gain in the most frequent decile.
 - **FALSIFIED** if there is no gain (CI includes 0 or duality is worse), or if the gain is not larger on rare tokens.
+
+---
+
+## Redesign results (2026-09-24). Full numbers are in RESULTS.md, "Redesign experiments".
+All runs have clean git state: exp400 (432 s), exp410 (4335 s), exp420 (1262 s), exp430/431 (396 s each), exp440 (2114 s). The CPU ran about 2.5× slower than on 2026-09-23, probably from throttling. That changes wall time only, not results, because training is deterministic.
+
+- **H2′ SUPPORTED.** The own-direction proxy reaches median ρ 0.771 and top-1 42.0% vs 12.1% chance (p=1.6e-11) on a fresh seed and fresh streams. The free-proxy failure (ρ −0.267) and the negative ρ of gradient-fit and lookahead (−0.88) both replicate.
+- **Additivity/horizon.** At h=20 the joint gain ≈ the sum of single gains (steps 100 and 500). At step 300 the exp200 "stable" switches are net negative on stream 779, both singly and jointly. At h=100 the share of single-block gains that stay positive drops at every checkpoint. Interpretation: H1 failed because per-block effects are near the noise floor and short-lived, *not* mainly because of interactions.
+- **H4 FALSIFIED.** Per-head vs random head-sized groups: −0.024 [−0.060, +0.012], so the CI includes 0. Every grouped variant is worse than whole-matrix Muon.
+- **H5 FALSIFIED.** On BPE, per-token rows lose to Adam on vocab blocks (+0.052 [+0.016, +0.088]). The loss is higher in every frequency decile, with no rare-token advantage.
+- **Gate.** The only surviving positive for MOG's selection idea is H2′. The next pre-registration, if any, is an H2′-scored selector, charged for its extra backward passes and compared with NorMuon at matched wall-clock. It needs the user's go-ahead.

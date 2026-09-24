@@ -77,14 +77,24 @@ Run: `exp200_oracle_1m/20260923T134338543058Z`. The oracle covers 3 checkpoints 
 | θ/C gradient-fit only | −0.87 | 1.2% | — |
 | 1-step lookahead | −0.86 | 3.7% | — |
 
+## Redesign experiments (pre-registered 2026-09-24)
+
+| ID | Test | Result | Verdict |
+|---|---|---|---|
+| exp400 + exp410 | **H2′**: own-direction secant proxy on fresh checkpoints (seed 4) and fresh streams 787/788 | Median ρ **0.771** (IQR 0.62–0.87). Top-1 agreement 42.0% vs 12.1% chance (binomial p=1.6e-11). Mean regret 3.1e-4. For comparison: free proxy ρ −0.267 (top-1 16%, p=0.18); same-batch ρ 0.19; gradient-fit alone ρ −0.88; 1-step lookahead ρ −0.88. | **SUPPORTED** (replicates exp200). The H2 falsification of the free proxy also replicates. |
+| exp420 | Additivity and horizon of the exp200 stable switches (stream 779) | h=20 joint vs sum of single-block gains: step 100 +0.0046 vs +0.0028; step 300 −0.0007 vs −0.0007; step 500 +0.0007 vs +0.0007. h=100: +0.0091 vs −0.0055; −0.0056 vs −0.0045; +0.0003 vs +0.0001. Share of single gains still positive at h=20 → h=100: 58%→25%, 67%→42%, 100%→75%. | Additivity **holds** at 2 of 3 checkpoints (step 300 fails at both horizons). Gains **fade** with horizon, and some "stable" exp200 switches do not replicate on a fresh stream. |
+| exp430 + exp431 | **H4 control**: head-sized groups with random membership (randpart), seeds 1–3 | randpart 1.7488 (1.7686 / 1.7358 / 1.7419). headmuon − randpart: −0.0241 [−0.0598, +0.0115]. randpart − muon: +0.0560 [+0.0040, +0.1081]. | Symmetry-matching part **FALSIFIED** (the CI includes 0). Grouping of any kind is worse than whole-matrix spectral. |
+| exp440 | **H5**: Adam vs per-token rows on embed/pos/head with GPT-2 BPE (11,706 types), seeds 1–3 | muon 4.8243 vs duality 4.8762. duality − muon: +0.0519 [+0.0160, +0.0877]. Per train-frequency decile of the target token (duality − muon): rarest +0.094 [−0.134, +0.322], median +0.073 [+0.039, +0.107], most frequent +0.059 [−0.028, +0.147]. | **FALSIFIED**. Per-token rows are *worse* than Adam, and the deficit is not smaller on rare tokens. |
+
 ## Hypotheses
 
 | # | Status | Evidence |
 |---|---|---|
-| H1 | **NOT SUPPORTED at 0.82M** (INCONCLUSIVE by the pre-registered criterion). The point estimate is unfavourable. | The oracle-scheduled MOG arm is +0.0150 [−0.0010, +0.0310] vs the best baseline (NorMuon) and +0.0119 [−0.0015, +0.0252] vs Muon. Single-block oracle wins did not combine into a better run. |
-| H2 | **FAIL** (pre-registered: the free proxy's median ρ ≤ 0.3 and its top-1 agreement is not above chance) | exp200 |
+| H1 | **NOT SUPPORTED at 0.82M** (INCONCLUSIVE by the pre-registered criterion). The point estimate is unfavourable. | The oracle-scheduled MOG arm is +0.0150 [−0.0010, +0.0310] vs the best baseline (NorMuon) and +0.0119 [−0.0015, +0.0252] vs Muon. exp420 shows why: per-block gains sit at the noise floor, fade by h=100 and partly fail to replicate, although they combine roughly additively at h=20. |
+| H2 | **FAIL** (pre-registered: the free proxy's median ρ ≤ 0.3 and its top-1 agreement is not above chance) | exp200, exp410 (replicated) |
+| H2′ (own-direction proxy) | **PASS** (ρ 0.771, top-1 42%, p=1.6e-11). It is not free: it costs one extra backward per candidate. | exp410 |
 | H2 sub-claim: r_eff collapses over training | **FAIL at this scale** | exp100: r_eff *rises* under both incumbents |
 | H3 | NOT TESTED | — |
-| H4 | Partial evidence **against** (the random-partition control was not run) | Per-head Muon is worse than whole-matrix Muon: +0.032 [+0.012, +0.052] |
-| H5 | NOT TESTABLE here (char vocab of 65, so no rare-token regime) | duality ≈ muon, +0.001 [−0.027, +0.029] |
+| H4 | **FAIL** | Per-head is worse than whole-matrix Muon (+0.032 [+0.012, +0.052]) and not distinguishable from random groups (−0.024 [−0.060, +0.012]) |
+| H5 | **FAIL** | With BPE (exp440), per-token rows are worse than Adam on vocab blocks: +0.052 [+0.016, +0.088], with no rare-token advantage |
 | H6–H9 | NOT TESTED | — |

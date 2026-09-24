@@ -1,0 +1,57 @@
+{
+  "command": "python -m scripts.run_experiment --config configs/redesign/exp420_additivity.yaml",
+  "error": null,
+  "evidence_class": "measured",
+  "experiment_id": "exp420_additivity",
+  "git_commit": "cdd26d7af15ddf195ce72f210ac450f88b98b4e8",
+  "git_dirty": false,
+  "seed": 0,
+  "status": "ok",
+  "summary": {
+    "100|h100": {
+      "frac_indiv_positive": 0.25,
+      "joint_gain": 0.009059339761734009,
+      "n_switches": 12,
+      "ratio_joint_to_sum": -1.6493009022890905,
+      "sum_indiv_gain": -0.005492836236953735
+    },
+    "100|h20": {
+      "frac_indiv_positive": 0.5833333333333334,
+      "joint_gain": 0.004570662975311279,
+      "n_switches": 12,
+      "ratio_joint_to_sum": 1.6153311425682508,
+      "sum_indiv_gain": 0.0028295516967773438
+    },
+    "300|h100": {
+      "frac_indiv_positive": 0.4166666666666667,
+      "joint_gain": -0.005600422620773315,
+      "n_switches": 12,
+      "ratio_joint_to_sum": 1.2438377018797988,
+      "sum_indiv_gain": -0.004502534866333008
+    },
+    "300|h20": {
+      "frac_indiv_positive": 0.6666666666666666,
+      "joint_gain": -0.0006639957427978516,
+      "n_switches": 12,
+      "ratio_joint_to_sum": 0.9453095167380882,
+      "sum_indiv_gain": -0.0007024109363555908
+    },
+    "500|h100": {
+      "frac_indiv_positive": 0.75,
+      "joint_gain": 0.0002718716859817505,
+      "n_switches": 12,
+      "ratio_joint_to_sum": 3.9177582134421303,
+      "sum_indiv_gain": 6.939470767974854e-05
+    },
+    "500|h20": {
+      "frac_indiv_positive": 1.0,
+      "joint_gain": 0.0006782561540603638,
+      "n_switches": 12,
+      "ratio_joint_to_sum": 1.01252391333363,
+      "sum_indiv_gain": 0.0006698668003082275
+    },
+    "oracle_run": "results\\raw\\exp200_oracle_1m\\20260923T134338543058Z",
+    "source_run": "results\\raw\\exp100_atlas_1m\\20260923T133718268064Z"
+  },
+  "wall_time_s": 1262.138
+}

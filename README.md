@@ -25,9 +25,12 @@ Stages 0–3 are complete (0.82M-parameter transformer on CPU). Full tables are 
 | H2: does the PDF's free proxy E_c predict the per-block oracle? | **No, FALSIFIED.** Median ρ −0.33, and top-1 agreement is at chance. |
 | H1: does an oracle per-block assignment beat the best tuned optimizer? | **Not supported.** +0.015 [−0.001, +0.031] vs NorMuon. |
 | Does momentum become low-rank over training (the PDF's premise for H2)? | **No.** r_eff rises. |
-| Is there a proxy that does work? | An *own-direction* secant (ρ 0.76, top-1 48%) does, but it costs one extra backward per candidate. It is exploratory and needs its own pre-registration. |
+| Is there a proxy that does work? | **Yes. H2′ passes its pre-registered replication** (fresh seed and data): the own-direction secant reaches ρ 0.77 and top-1 42%. It costs one extra backward per candidate. |
+| H4: does per-head grouping help? | **No.** It is worse than whole-matrix Muon and no better than random groups. |
+| H5: does per-token geometry help on vocab blocks, with real rare tokens (BPE)? | **No.** It is worse than Adam (+0.052), with no rare-token advantage. |
+| Why did the oracle arm fail? | Per-block gains sit at the noise floor and fade over 100 steps. At 20 steps they combine roughly additively (exp420). |
 
-Gate: **NO-GO** for scaling the PDF's selector. The next step is a redesign (EXPERIMENT_LOG, "Gate decision").
+Gate: **NO-GO** for scaling the PDF's selector. The redesign experiments are complete. A beginner-level explanation of the whole project is in [docs/PRIMER.md](docs/PRIMER.md).
 
 ## Installation
 

@@ -1,0 +1,31 @@
+{
+  "command": "python -m scripts.run_experiment --config configs/redesign/exp431_h4_randpart.yaml",
+  "error": null,
+  "evidence_class": "measured",
+  "experiment_id": "exp431_h4_randpart",
+  "git_commit": "cdd26d7af15ddf195ce72f210ac450f88b98b4e8",
+  "git_dirty": false,
+  "seed": 1,
+  "status": "ok",
+  "summary": {
+    "randpart|0.01|1": {
+      "diverged": false,
+      "final_train": 1.5996793365478517,
+      "final_val": 1.7686496078968048,
+      "wall_s": 135.55
+    },
+    "randpart|0.01|2": {
+      "diverged": false,
+      "final_train": 1.5815376663208007,
+      "final_val": 1.735823780298233,
+      "wall_s": 130.2
+    },
+    "randpart|0.01|3": {
+      "diverged": false,
+      "final_train": 1.59601930975914,
+      "final_val": 1.7419236451387405,
+      "wall_s": 130.11
+    }
+  },
+  "wall_time_s": 396.29
+}

@@ -1,0 +1,85 @@
+{
+  "command": "python -m scripts.run_experiment --config configs/redesign/exp410_h2prime_oracle.yaml",
+  "error": null,
+  "evidence_class": "measured",
+  "experiment_id": "exp410_h2prime_oracle",
+  "git_commit": "cdd26d7af15ddf195ce72f210ac450f88b98b4e8",
+  "git_dirty": false,
+  "seed": 4,
+  "status": "ok",
+  "summary": {
+    "best_rule_counts": {
+      "adam": 13,
+      "cols": 1,
+      "normuon": 34,
+      "pw05": 1,
+      "rows": 4,
+      "sign": 3,
+      "spectral": 22,
+      "spectral_head": 3
+    },
+    "median_best_gain": 2.205371856689453e-06,
+    "n_block_ckpts": 81,
+    "non_incumbent_stable_on_alt_data": 28,
+    "oracle_prefers_non_incumbent": 55,
+    "proxies": {
+      "fit": {
+        "mean_regret": 0.0033669092772919454,
+        "n_blocks": 81,
+        "spearman_iqr": [
+          -0.9333333333333332,
+          -0.7333333333333334
+        ],
+        "spearman_median": -0.8833333333333333,
+        "top1_agreement": 0.0,
+        "top1_chance": 0.12139917695473251
+      },
+      "free": {
+        "mean_regret": 0.0014454315841933827,
+        "n_blocks": 81,
+        "spearman_iqr": [
+          -0.48333333333333334,
+          -0.023809523809523815
+        ],
+        "spearman_median": -0.26666666666666666,
+        "top1_agreement": 0.16049382716049382,
+        "top1_chance": 0.12139917695473251
+      },
+      "lookahead": {
+        "mean_regret": 0.0027165666774467186,
+        "n_blocks": 81,
+        "spearman_iqr": [
+          -0.9333333333333332,
+          -0.7
+        ],
+        "spearman_median": -0.8833333333333333,
+        "top1_agreement": 0.012345679012345678,
+        "top1_chance": 0.12139917695473251
+      },
+      "own": {
+        "mean_regret": 0.00031298380575062315,
+        "n_blocks": 81,
+        "spearman_iqr": [
+          0.6166666666666666,
+          0.8666666666666667
+        ],
+        "spearman_median": 0.7714285714285715,
+        "top1_agreement": 0.41975308641975306,
+        "top1_chance": 0.12139917695473251
+      },
+      "same": {
+        "mean_regret": 0.0015645051076088423,
+        "n_blocks": 81,
+        "spearman_iqr": [
+          -0.11666666666666665,
+          0.43333333333333335
+        ],
+        "spearman_median": 0.19047619047619052,
+        "top1_agreement": 0.13580246913580246,
+        "top1_chance": 0.12139917695473251
+      }
+    },
+    "source_run": "results\\raw\\exp400_h2prime_ckpts\\20260924T032738085388Z"
+  },
+  "wall_time_s": 4335.291
+}

@@ -1,0 +1,32 @@
+experiment_id: exp400_h2prime_ckpts
+entry: experiments/01_geometry_validation/atlas.py
+evidence_class: measured
+description: Fresh incumbent (muon hybrid, tuned lr 0.01, NEW seed 4) writing checkpoints
+  100/300/500 for the H2' oracle. atlas_every is set beyond the run length, so no
+  atlas measurements are taken.
+seed: 4
+arms:
+  muon:
+    hidden: spectral
+    default: adam
+lr:
+  muon: 0.01
+atlas_every: 100000
+checkpoints:
+- 100
+- 300
+- 500
+train:
+  model:
+    d: 128
+    n_layer: 4
+    n_head: 4
+    ctx: 128
+  batch_size: 16
+  steps: 600
+  warmup: 60
+  min_lr_frac: 0.1
+  eval_every: 100
+  eval_batches: 8
+  threads: 4
+  seed: 4

@@ -1,0 +1,11 @@
+experiment_id: exp420_additivity
+entry: experiments/03_oracle/additivity.py
+evidence_class: measured
+description: 'Additivity and horizon of the exp200 stable switches: each alone vs
+  all jointly, h=20 and h=100, fresh data stream 779.'
+seed: 0
+oracle_experiment: exp200_oracle_1m
+horizons:
+- 20
+- 100
+data_seed: 779

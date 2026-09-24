@@ -1,0 +1,14 @@
+C:\Users\chann\AppData\Roaming\Python\Python312\site-packages\requests\__init__.py:109: RequestsDependencyWarning: urllib3 (2.2.3) or chardet (7.4.3)/charset_normalizer (3.3.2) doesn't match a supported version!
+  warnings.warn(
+tune  muon     lr=0.00333333 seed=0 val=4.8643
+tune  muon     lr=0.01      seed=0 val=4.8416
+tune  muon     lr=0.03      seed=0 val=4.9254
+eval  muon     lr=0.01      seed=1 val=4.8137
+eval  muon     lr=0.01      seed=2 val=4.8154
+eval  muon     lr=0.01      seed=3 val=4.8438
+tune  duality  lr=0.00333333 seed=0 val=4.8741
+tune  duality  lr=0.01      seed=0 val=4.8691
+tune  duality  lr=0.03      seed=0 val=4.9617
+eval  duality  lr=0.01      seed=1 val=4.8821
+eval  duality  lr=0.01      seed=2 val=4.8572
+eval  duality  lr=0.01      seed=3 val=4.8892

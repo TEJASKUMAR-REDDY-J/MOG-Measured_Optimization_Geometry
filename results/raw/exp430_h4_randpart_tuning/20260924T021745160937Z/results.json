@@ -1,0 +1,31 @@
+{
+  "command": "python -m scripts.run_experiment --config configs/redesign/exp430_h4_randpart_tuning.yaml",
+  "error": null,
+  "evidence_class": "measured",
+  "experiment_id": "exp430_h4_randpart_tuning",
+  "git_commit": "2c9b45800dfd734048e65463d5c860271252bffb",
+  "git_dirty": false,
+  "seed": 0,
+  "status": "ok",
+  "summary": {
+    "randpart|0.00333333|0": {
+      "diverged": false,
+      "final_train": 1.6480226111412049,
+      "final_val": 1.808428481221199,
+      "wall_s": 126.21
+    },
+    "randpart|0.01|0": {
+      "diverged": false,
+      "final_train": 1.5935262894630433,
+      "final_val": 1.7597630620002747,
+      "wall_s": 121.97
+    },
+    "randpart|0.03|0": {
+      "diverged": false,
+      "final_train": 1.860157803297043,
+      "final_val": 1.967990219593048,
+      "wall_s": 147.71
+    }
+  },
+  "wall_time_s": 396.222
+}

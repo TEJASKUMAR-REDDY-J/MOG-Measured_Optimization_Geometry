@@ -1,0 +1,8 @@
+oracle: F:\MOG Measured Optimization Geometry\results\raw\exp200_oracle_1m\20260923T134338543058Z
+checkpoints: F:\MOG Measured Optimization Geometry\results\raw\exp100_atlas_1m\20260923T133718268064Z
+step 100 h=20: 12 switches, sum indiv +0.00283, joint +0.00457
+step 100 h=100: 12 switches, sum indiv -0.00549, joint +0.00906
+step 300 h=20: 12 switches, sum indiv -0.00070, joint -0.00066
+step 300 h=100: 12 switches, sum indiv -0.00450, joint -0.00560
+step 500 h=20: 12 switches, sum indiv +0.00067, joint +0.00068
+step 500 h=100: 12 switches, sum indiv +0.00007, joint +0.00027

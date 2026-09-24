@@ -11,7 +11,8 @@
 - [x] Stage 3: exp150/151 → exp100 → exp200 → exp290 → exp160 → exp300 (gate: NO-GO for scaling; redesign)
 
 ## Next
-- [ ] Redesign pre-registrations: H2' own-direction proxy, joint/longer-horizon oracle, H4 random-partition control
+- [x] Redesign: H2′ passes; H4 and H5 falsified; additivity mostly holds but gains fade (exp400–440)
+- [ ] Decide next: an H2′-driven selector with its extra backward cost counted, tested against NorMuon at matched **wall-clock**
 - [ ] Results page (`reports/`, private, UI paused)
 - [ ] Framework extraction (docs/FRAMEWORK.md): generic block discovery; atlas and oracle behind a library API
 - [ ] Stage 1 synthetic extensions (non-square shapes, sizes, rank sweeps)

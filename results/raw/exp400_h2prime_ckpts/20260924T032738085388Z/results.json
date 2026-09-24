@@ -1,0 +1,62 @@
+{
+  "command": "python -m scripts.run_experiment --config configs/redesign/exp400_h2prime_ckpts.yaml",
+  "error": null,
+  "evidence_class": "measured",
+  "experiment_id": "exp400_h2prime_ckpts",
+  "git_commit": "cdd26d7af15ddf195ce72f210ac450f88b98b4e8",
+  "git_dirty": false,
+  "seed": 4,
+  "status": "ok",
+  "summary": {
+    "muon": {
+      "diverged": false,
+      "final_train": 1.5214735281467437,
+      "final_val": 1.6831866800785065,
+      "history": [
+        {
+          "lr": 0.009884665291533559,
+          "step": 100,
+          "train_loss": 2.6746389412879945,
+          "val_loss": 2.449721395969391,
+          "wall_s": 23.44
+        },
+        {
+          "lr": 0.008607077600253624,
+          "step": 200,
+          "train_loss": 2.1757967710494994,
+          "val_loss": 2.0792603492736816,
+          "wall_s": 47.24
+        },
+        {
+          "lr": 0.006307185636718559,
+          "step": 300,
+          "train_loss": 1.858633109331131,
+          "val_loss": 1.9411113411188126,
+          "wall_s": 71.1
+        },
+        {
+          "lr": 0.0037417099217982685,
+          "step": 400,
+          "train_loss": 1.704687099456787,
+          "val_loss": 1.8029985129833221,
+          "wall_s": 95.85
+        },
+        {
+          "lr": 0.001754754504749751,
+          "step": 500,
+          "train_loss": 1.5962537956237792,
+          "val_loss": 1.7282778322696686,
+          "wall_s": 173.44
+        },
+        {
+          "lr": 0.0010000761541401509,
+          "step": 600,
+          "train_loss": 1.5214735281467437,
+          "val_loss": 1.6831866800785065,
+          "wall_s": 431.66
+        }
+      ]
+    }
+  },
+  "wall_time_s": 431.993
+}

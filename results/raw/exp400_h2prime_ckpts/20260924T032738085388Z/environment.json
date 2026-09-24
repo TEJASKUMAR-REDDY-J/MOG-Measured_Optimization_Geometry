@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "F:\\MOG Measured Optimization Geometry\\scripts\\run_experiment.py",
+    "--config",
+    "configs/redesign/exp400_h2prime_ckpts.yaml"
+  ],
+  "cpu_count": 4,
+  "cuda_available": false,
+  "cuda_device": null,
+  "git_commit": "cdd26d7af15ddf195ce72f210ac450f88b98b4e8",
+  "git_dirty": false,
+  "numpy": "1.26.4",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 142 Stepping 12, GenuineIntel",
+  "python": "3.12.7",
+  "timestamp_utc": "2026-09-24T03:27:38+00:00",
+  "torch": "2.8.0+cpu"
+}

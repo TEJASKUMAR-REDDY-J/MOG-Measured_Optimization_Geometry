@@ -1,0 +1,7 @@
+experiment_id: exp520_p1_synthetic_checks
+entry: experiments/00_synthetic/cross_paradigm_checks.py
+evidence_class: synthetic
+description: 'Pivot Phase 1: numerical checks of the cross-paradigm document''s closed-form claims (T1-T5, T8)
+  and validation of the new block-statistic estimators on planted ground truth (T6, T7).'
+seed: 520
+threads: 1

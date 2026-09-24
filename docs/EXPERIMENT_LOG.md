@@ -228,3 +228,17 @@ Checkpoints: muon incumbent (exp400) and AdamW incumbent (exp504), seed 4, steps
 **Equivalence margins:** 0.002 nats (h=20) and 0.005 nats (h=100).
 
 Known confound, declared in advance: switching rules mid-run can cost transiently ("switching shock"). h=100 and the end-to-end arms guard against reading a shock as a geometry effect. The AdamW-incumbent source guards against self-confirming geometry (proposal R8).
+
+## Pivot Phase 1 pre-registration: exp520 synthetic checks (written 2026-09-24, before the run)
+These check the cross-paradigm document's closed-form claims and validate the new estimators in `mog/selection/block_stats.py`. Each item gets PASS or FAIL at a tolerance fixed here.
+
+| Check | Claim | PASS if |
+|---|---|---|
+| T1 | Low-SNR alignment efficiency vs SGD is {0.72, 0.64}·SNR² for polar and sign | Both within 5% at SNR 0.01 (n=64, 4000 draws) |
+| T2 | Exact-polar cosine saturates at √(r/n) | Within 0.02 of 0.25 at SNR 10 (r=4, n=64) |
+| T3 | Tail amplification | Noise fraction within 0.01 of 0.070; effective rank within ±3 of 26 (polar) and 6 (SGD) |
+| T4 | Coupling law α* = 1 − 4p | Grid argmax within 0.02 |
+| T5 | κ∞ | 1 for diagonal A; n for a ±1 rank-one A; SDP equals the exact value for a Gaussian rank-one A; that value is within 10% of 2n/π |
+| T6 | Split-batch alignment is unbiased | Mean within 0.02 of the true cosine, for spectral/sign/rows at SNR 0.3/1/3 |
+| T7 | `coupling_exponent` recovers a planted p ∈ {0, ¼, ½} | Within 0.02 |
+| T8 | Power figures | MDE 2.02 and 2.83 SD (±0.05); TOST n of 69 and 18 (±1) |

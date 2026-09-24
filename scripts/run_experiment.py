@@ -37,6 +37,9 @@ class _Tee:
         for st in self.streams:
             st.flush()
 
+    def close(self):  # logging handlers (e.g. absl via JAX) close their stream at exit; the tee owns nothing
+        pass
+
 
 def _load_entry(path: Path):
     spec = importlib.util.spec_from_file_location(f"mog_entry_{path.stem}", path)

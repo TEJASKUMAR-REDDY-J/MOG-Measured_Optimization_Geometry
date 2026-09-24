@@ -96,3 +96,15 @@ Gate: if gains are at the noise floor in every paradigm, stop H1 and report.
 1. Approve Phase 0? It is the only thing proposed to run now.
 2. Where should the cross-paradigm work live? Options are a new package area in this repo on the pivot branch, or a separate repository.
 3. Is GPU compute available later? That decides whether Phase 4 includes RLVR, DiT or CIFAR FID.
+
+## 6. Compute: what was tried to run faster (2026-09-24)
+Machine: 4 logical CPUs (behaves like 2 physical cores with hyper-threading), no GPU, no C++ compiler.
+
+| Option | Measured on the 0.82M LM step | Decision |
+|---|---|---|
+| More torch threads per run (1 → 2 → 4) | 0.327 → 0.329 → 0.326 s/step: no gain. The model is too small to parallelise inside one step. | 1 thread per run |
+| Several runs in parallel processes | 4 processes × 1 thread give 5.3 steps/s vs 3.0 for one run: **1.74× throughput** | Default for every sweep and oracle (`workers: 4`); results are bit-identical to serial |
+| `torch.compile` (inductor) | Needs a C++ compiler, and none is installed | Not used |
+| JAX/XLA for the transformer | Full jitted train step 0.69 s vs 0.25 s in torch+MKL (**2.8× slower**) | Transformers, CNNs and flow models stay in torch |
+| JAX + gymnax for RL | MinAtar Breakout simulated at ~300k env-steps/s inside one jitted scan; whole PPO update jitted | RL runs in JAX (PureJaxRL structure) with the MOG rules ported and cross-checked against torch (`tests/test_rl_rules.py`) |
+| Smaller CPU-scale models | Newton–Schulz on a 512-wide MLP cost 7× an Adam step | Widths set so a full run takes minutes (see Phase 2 pre-registration) |

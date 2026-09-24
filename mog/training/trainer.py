@@ -112,3 +112,30 @@ def train(cfg: dict, run_dir: Path | None = None, callback: Callable | None = No
     return {"history": hist, "final_val": final_val,
             "final_train": float("inf") if diverged else (hist[-1]["train_loss"] if hist else float("nan")),
             "diverged": diverged, "wall_s": round(time.time() - t0, 2), "model": model, "opt": opt, "blocks": bl}
+
+
+_CKPT: dict = {}
+
+
+def rollout_job(ckpt_path: str, switches: dict, horizon: int, data_seed: int) -> float:
+    """Picklable oracle rollout: from a checkpoint, set `switches` {block: rule}, train `horizon`
+    steps at the checkpoint's LR (held constant) on stream `data_seed`, return val loss."""
+    torch.set_num_threads(1)
+    if ckpt_path not in _CKPT:
+        _CKPT.clear()
+        _CKPT[ckpt_path] = torch.load(ckpt_path, weights_only=False)
+    ck = _CKPT[ckpt_path]
+    cfg = dict(ck["cfg"]) | {"steps": ck["step"] + horizon, "data_seed": data_seed, "eval_every": 10**9,
+                             "const_lr": lr_at(ck["step"] - 1, ck["cfg"]), "checkpoints": [], "threads": 1}
+
+    def sched(step, opt):
+        for block, rule in switches.items():
+            opt.set_rule(block, rule)
+
+    return train(cfg, start=ck, rule_schedule=sched if switches else None, log=lambda *a: None)["final_val"]
+
+
+def train_job(cfg: dict) -> dict:
+    """Picklable worker for process pools: train() without the live objects."""
+    r = train(cfg, log=lambda *a: None)
+    return {k: r[k] for k in ("history", "final_val", "final_train", "diverged", "wall_s")}

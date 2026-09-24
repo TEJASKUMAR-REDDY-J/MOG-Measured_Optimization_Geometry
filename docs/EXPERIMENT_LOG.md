@@ -179,3 +179,52 @@ All runs have clean git state: exp400 (432 s), exp410 (4335 s), exp420 (1262 s),
 - **H4 FALSIFIED.** Per-head vs random head-sized groups: −0.024 [−0.060, +0.012], so the CI includes 0. Every grouped variant is worse than whole-matrix Muon.
 - **H5 FALSIFIED.** On BPE, per-token rows lose to Adam on vocab blocks (+0.052 [+0.016, +0.088]). The loss is higher in every frequency decile, with no rare-token advantage.
 - **Gate.** The only surviving positive for MOG's selection idea is H2′. The next pre-registration, if any, is an H2′-scored selector, charged for its extra backward passes and compared with NorMuon at matched wall-clock. It needs the user's go-ahead.
+
+---
+
+## Pivot Phase 0 pre-registration: shape vs scale (written 2026-09-24, before any Phase 0 run)
+Source: docs/pivot/CROSS_PARADIGM_ASSESSMENT.md, which tests H2 of the cross-paradigm proposal. Question: does the hidden-weight geometry effect survive per-block update-scale matching and a random-spectrum control, or is it a step-size effect?
+
+Arms. Each changes the rule on the hidden weights only; every other block uses adam.
+- muon (NS spectral) and polar (exact SVD UVᵀ).
+- randspec: U·diag(Uniform(0,1))·Vᵀ, fresh each step.
+- kaon: chaotic spectrum map, arXiv:2605.11181.
+- freon23 and freon34: S^(−1/3) and S^(−1/2).
+- adam_rms: Adam direction at per-block RMS 0.2.
+- spec_adamscale: NS direction at the norm of u/√v̂.
+- sign_h and rows_h.
+- adamw.
+
+All LMO-type rules share per-block RMS 0.2.
+
+Protocol:
+- 0.82M char model, 600 steps. LR grid {0.00333, 0.01, 0.03} on seed 0, plus the edge rule.
+- Evaluation seeds 1–5.
+- 4 worker processes with 1 thread each. Every arm is re-run under the same settings, so none is borrowed from exp160.
+- Replication subset on GPT-2 BPE (300 steps): muon, adamw, adam_rms, polar, randspec, kaon.
+
+### exp500–502 (char) and exp510–512 (BPE): end-to-end
+Primary contrasts use paired 95% t-intervals (df=4). Equivalence uses TOST with margin δ = 0.02 nats.
+- C1: muon vs adam_rms (shape at matched per-block scale).
+- C2: muon vs randspec; C3: polar vs randspec (whether singular values carry information).
+- C4: adamw vs adam_rms (per-block scale, Adam shape); C5: muon vs spec_adamscale (per-block scale, spectral shape).
+
+Pre-registered readings:
+- **(a) Shape matters.** C1 and C2 (or C3) both favour spectral, with CIs excluding 0.
+- **(b) Singular vectors matter, singular values do not (Kaon's thesis).** C1 favours spectral and C2/C3 are TOST-equivalent.
+- **(c) Scale only (NO-GO for shape; pivot to per-block scale theory).** C1 and C2 are both TOST-equivalent.
+- **(d) INCONCLUSIVE:** anything else.
+
+Secondary contrasts are descriptive: kaon, freon23, freon34, sign_h and rows_h each against muon.
+
+### exp504 + exp505: paired unit oracle
+Checkpoints: muon incumbent (exp400) and AdamW incumbent (exp504), seed 4, steps 100/300/500.
+- Units: whole classes (attn, mlp, hidden) at h ∈ {20, 100} on streams 901/902, and single hidden blocks (muon source) at h=20 on stream 901.
+- Gain = L(incumbent) − L(candidate) on the fixed validation batches.
+- Contrasts pool paired differences over checkpoints × streams (classes) or checkpoints × blocks (single blocks).
+
+**GO for shape (per unit class):** spectral − adam_rms > 0 and spectral − randspec > 0, both with CI excluding 0, at h=100, from **both** incumbents.
+
+**Equivalence margins:** 0.002 nats (h=20) and 0.005 nats (h=100).
+
+Known confound, declared in advance: switching rules mid-run can cost transiently ("switching shock"). h=100 and the end-to-end arms guard against reading a shock as a geometry effect. The AdamW-incumbent source guards against self-confirming geometry (proposal R8).

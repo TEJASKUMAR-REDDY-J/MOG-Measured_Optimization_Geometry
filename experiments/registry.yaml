@@ -19,3 +19,12 @@
 - {id: exp430_h4_randpart_tuning, stage: 3, config: configs/redesign/exp430_h4_randpart_tuning.yaml, evidence_class: measured, hypotheses: [H4], status: done}
 - {id: exp431_h4_randpart, stage: 3, config: configs/redesign/exp431_h4_randpart.yaml, evidence_class: measured, hypotheses: [H4], status: done}
 - {id: exp440_h5_vocab, stage: 3, config: configs/redesign/exp440_h5_vocab.yaml, evidence_class: measured, hypotheses: [H5], status: done}
+# --- pivot (cross-paradigm), branch pivot/cross-paradigm ---
+- {id: exp500_p0_tuning, stage: P0, config: configs/pivot/exp500_p0_tuning.yaml, evidence_class: measured, hypotheses: [X-H2], status: ready}
+- {id: exp501_p0_edge, stage: P0, config: configs/pivot/exp501_p0_edge.yaml, evidence_class: measured, hypotheses: [X-H2], status: planned}
+- {id: exp502_p0_eval, stage: P0, config: configs/pivot/exp502_p0_eval.yaml, evidence_class: measured, hypotheses: [X-H2], status: planned}
+- {id: exp504_p0_adamw_ckpts, stage: P0, config: configs/pivot/exp504_p0_adamw_ckpts.yaml, evidence_class: measured, hypotheses: [X-H2], status: ready}
+- {id: exp505_p0_oracle_units, stage: P0, config: configs/pivot/exp505_p0_oracle_units.yaml, evidence_class: measured, hypotheses: [X-H2], status: ready}
+- {id: exp510_p0_bpe_tuning, stage: P0, config: configs/pivot/exp510_p0_bpe_tuning.yaml, evidence_class: measured, hypotheses: [X-H2], status: ready}
+- {id: exp511_p0_bpe_edge, stage: P0, config: configs/pivot/exp511_p0_bpe_edge.yaml, evidence_class: measured, hypotheses: [X-H2], status: planned}
+- {id: exp512_p0_bpe_eval, stage: P0, config: configs/pivot/exp512_p0_bpe_eval.yaml, evidence_class: measured, hypotheses: [X-H2], status: planned}

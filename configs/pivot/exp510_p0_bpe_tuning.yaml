@@ -1,0 +1,40 @@
+experiment_id: exp510_p0_bpe_tuning
+entry: experiments/sweep.py
+evidence_class: measured
+description: 'Pivot Phase 0 (bpe): 3-point LR grid, seed 0 only.'
+seed: 0
+arms_file: configs/arms.yaml
+arms:
+- muon
+- adamw
+- adam_rms
+- polar
+- randspec
+- kaon
+lr:
+  muon: &id001
+  - 0.00333333
+  - 0.01
+  - 0.03
+  adamw: *id001
+  adam_rms: *id001
+  polar: *id001
+  randspec: *id001
+  kaon: *id001
+seeds:
+- 0
+workers: 4
+train:
+  model:
+    d: 128
+    n_layer: 4
+    n_head: 4
+    ctx: 128
+  batch_size: 16
+  steps: 300
+  warmup: 30
+  min_lr_frac: 0.1
+  eval_every: 50
+  eval_batches: 16
+  threads: 1
+  data: bpe

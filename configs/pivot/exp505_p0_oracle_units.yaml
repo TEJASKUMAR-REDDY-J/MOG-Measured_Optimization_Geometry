@@ -1,0 +1,26 @@
+experiment_id: exp505_p0_oracle_units
+entry: experiments/08_shape_scale/oracle_units.py
+evidence_class: measured
+description: 'Pivot Phase 0 paired oracle: from common checkpoints (muon incumbent exp400,
+  adamw incumbent exp504; seed 4, steps 100/300/500) switch a block class (attn / mlp /
+  hidden) or a single hidden block to each candidate rule; gain = L(incumbent) - L(candidate).'
+seed: 4
+sources:
+  muon: latest:exp400_h2prime_ckpts
+  adamw: latest:exp504_p0_adamw_ckpts
+checkpoints: [100, 300, 500]
+candidates: [spectral, polar_svd, randspec, kaon, freon23, freon34, adam_rms, spec_adamscale, sign, rows, adam]
+class_units: {horizons: [20, 100], data_seeds: [901, 902]}
+block_units: {sources: [muon], horizons: [20], data_seeds: [901]}
+contrasts:
+- [spectral, adam_rms]
+- [spectral, randspec]
+- [polar_svd, randspec]
+- [spectral, kaon]
+- [spectral, polar_svd]
+- [adam_rms, adam]
+- [spectral, spec_adamscale]
+- [spectral, sign]
+- [spectral, rows]
+- [randspec, adam_rms]
+workers: 4

@@ -72,3 +72,40 @@ def test_adam_mini_is_blockwise_constant():
     from mog.optim.blockwise import _adam_mini_mean
     vm = _adam_mini_mean(st["v"], "q", 2).reshape(2, -1)
     assert torch.allclose(vm, vm[:, :1].expand_as(vm))
+
+
+def test_svd_rules_keep_singular_vectors_and_map_spectrum():
+    from mog.optim.blockwise import svd_rule
+
+    u = torch.randn(12, 7, generator=torch.Generator().manual_seed(0), dtype=torch.float64)
+    U, S, Vh = torch.linalg.svd(u, full_matrices=False)
+    polar = svd_rule(u, "polar_svd")
+    assert torch.allclose(polar, U @ Vh)
+    for rule, expect in [("freon34", S ** -0.5), ("freon23", S ** (-1 / 3))]:
+        f = torch.diagonal(U.T @ svd_rule(u, rule) @ Vh.T)
+        assert torch.allclose(f, expect, rtol=1e-6)
+    x = S / u.norm()
+    for _ in range(5):
+        x = 4.1 * x * (1 - x * x) ** 2
+    assert torch.allclose(torch.diagonal(U.T @ svd_rule(u, "kaon") @ Vh.T), x)
+    r = torch.diagonal(U.T @ svd_rule(u, "randspec", torch.Generator().manual_seed(1)) @ Vh.T)
+    assert ((r >= 0) & (r <= 1)).all() and r.std() > 0
+
+
+def test_scale_controls():
+    """adam_rms = Adam direction at RMS 0.2; randspec is deterministic per (block, step)."""
+    for rule in ("adam_rms", "randspec", "kaon", "freon23", "polar_svd"):
+        m, bl, opt = _setup({"hidden": rule, "default": "adam"})
+        _grads(m, 0)
+        b = next(b for b in bl if b["kind"] == "up")
+        st = {"m": torch.zeros_like(b["param"]), "v": b["param"].grad ** 2 * 0.05, "t": 1}
+        d = opt.direction(b, b["param"].grad, st, rule)
+        assert abs(d.pow(2).mean().sqrt().item() - 0.2) < 1e-5
+        if rule == "adam_rms":
+            a = opt.direction(b, b["param"].grad, {"m": torch.zeros_like(d), "v": st["v"], "t": 1}, "adam")
+            assert torch.allclose(d / d.norm(), a / a.norm(), atol=1e-6)
+    m, bl, opt = _setup({"hidden": "randspec", "default": "adam"})
+    _grads(m, 0)
+    b = bl[2]
+    mk = lambda: {"m": torch.zeros_like(b["param"]), "v": torch.zeros_like(b["param"]), "t": 3}
+    assert torch.equal(opt.direction(b, b["param"].grad, mk(), "randspec"), opt.direction(b, b["param"].grad, mk(), "randspec"))

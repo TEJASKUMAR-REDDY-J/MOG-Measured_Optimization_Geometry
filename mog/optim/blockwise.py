@@ -14,6 +14,13 @@ the Moonlight/NorMuon convention that lets them share one LR with Adam):
     sign, euclid, rows, cols, spectral (Muon, Newton-Schulz), spectral_head
     (per-head grouped; q/k/v by output rows, o by input cols), pw05 (alpha=1/2
     partial whitening, exact SVD), normuon (NS + per-row second moment, beta2 0.95)
+shape-vs-scale controls (pivot Phase 0; exact SVD u = U S V^T, output U f(S) V^T, then RMS 0.2):
+    polar_svd  f(S) = 1                      (exact Muon direction, no NS error)
+    randspec   f(S) ~ Uniform(0,1) i.i.d., fresh each step (random-spectrum control)
+    kaon       f = 5 iterations of x -> 4.1 x (1-x^2)^2 on S/||u||_F (Kaon, arXiv:2605.11181)
+    freon23 / freon34   f(S) = S^(1-2c), c = 2/3, 3/4 (Schatten quasi-norm, same paper)
+    adam_rms   Adam direction rescaled to RMS 0.2 (Adam shape, Muon scale)
+    spec_adamscale  NS direction rescaled to the norm of u/sqrt(v_hat) (Muon shape, Adam-like scale)
 
 Every block also keeps an Adam second moment v, so switching to adam is seamless.
 Weight decay is 0 for all rules (one less tuned knob; documented in the protocol).
@@ -29,7 +36,9 @@ import torch
 from mog.geometry import Elementwise, Euclidean, RowNorm, Spectral, newton_schulz
 
 NATIVE = ("sgd", "adam", "adam_mini", "lion")
-LMO = ("sign", "euclid", "rows", "cols", "spectral", "spectral_head", "pw05", "normuon", "spectral_randgroup")
+SVD_RULES = ("polar_svd", "randspec", "kaon", "freon23", "freon34")
+LMO = ("sign", "euclid", "rows", "cols", "spectral", "spectral_head", "pw05", "normuon", "spectral_randgroup",
+       "adam_rms", "spec_adamscale") + SVD_RULES
 RULES = NATIVE + LMO
 MATRIX_KINDS = ("embed", "pos", "q", "k", "v", "o", "up", "down", "head")
 HIDDEN = ("q", "k", "v", "o", "up", "down")
@@ -87,6 +96,26 @@ def resolve_rules(blocks: list[dict], spec: dict) -> dict[str, str]:
     return out
 
 
+def svd_rule(u: torch.Tensor, rule: str, gen: torch.Generator | None = None) -> torch.Tensor:
+    """U f(S) V^T for the SVD_RULES (unscaled; the caller rescales to the target RMS)."""
+    U, S, Vh = torch.linalg.svd(u, full_matrices=False)
+    if rule == "polar_svd":
+        f = torch.ones_like(S)
+    elif rule == "randspec":
+        f = torch.rand(S.shape, generator=gen)
+    elif rule == "kaon":
+        f = S / u.norm().clamp_min(1e-30)
+        for _ in range(5):
+            f = 4.1 * f * (1 - f * f) ** 2
+    elif rule in ("freon23", "freon34"):
+        c = 2 / 3 if rule == "freon23" else 3 / 4
+        # ponytail: floor at 1e-3 * S_max stands in for the paper's rational-approximant regularisation
+        f = S.clamp_min(1e-3 * S[0]) ** (1 - 2 * c)
+    else:
+        raise ValueError(rule)
+    return (U * f) @ Vh
+
+
 def _adam_mini_mean(v: torch.Tensor, kind: str, n_head: int) -> torch.Tensor:
     if v.ndim == 1:
         return v.mean().expand_as(v)
@@ -127,10 +156,11 @@ class BlockOptimizer:
     def direction(self, block: dict, g: torch.Tensor, st: dict, rule: str) -> torch.Tensor:
         """Compute the update direction and advance this block's momentum state."""
         m, v, t = st["m"], st["v"], st["t"]
-        if rule in ("adam", "adam_mini"):
+        if rule in ("adam", "adam_mini", "adam_rms"):
             m.lerp_(g, 0.1)
-            vv = v if rule == "adam" else _adam_mini_mean(v, block["kind"], block["n_head"])
-            return (m / (1 - 0.9**t)) / ((vv / (1 - 0.95**t)).sqrt() + 1e-8)
+            vv = _adam_mini_mean(v, block["kind"], block["n_head"]) if rule == "adam_mini" else v
+            d = (m / (1 - 0.9**t)) / ((vv / (1 - 0.95**t)).sqrt() + 1e-8)
+            return d if rule != "adam_rms" else d * (self.rms * math.sqrt(d.numel()) / d.norm().clamp_min(1e-30))
         if rule == "lion":
             c = m * 0.9 + g * 0.1
             m.lerp_(g, 0.01)
@@ -145,6 +175,13 @@ class BlockOptimizer:
             vr = st.setdefault("vrow", torch.zeros(O.shape[0], 1))
             vr.lerp_((O * O).mean(1, keepdim=True), 0.05)
             O = O / ((vr / (1 - 0.95**t)).sqrt() + 1e-8)
+        elif rule == "spec_adamscale":
+            O = newton_schulz(u)
+            a = u / ((v / (1 - 0.95**t)).sqrt() + 1e-8)
+            return O * (a.norm() / O.norm().clamp_min(1e-30))
+        elif rule in SVD_RULES:
+            gen = torch.Generator().manual_seed(zlib.crc32(block["name"].encode()) * 1_000_003 + t) if rule == "randspec" else None
+            O = svd_rule(u, rule, gen)
         else:
             O = self._geometry(rule, block).lmo(u)
         return O * (self.rms * math.sqrt(O.numel()) / O.norm().clamp_min(1e-30))

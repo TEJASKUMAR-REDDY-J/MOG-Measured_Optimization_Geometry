@@ -1,0 +1,49 @@
+experiment_id: exp500_p0_tuning
+entry: experiments/sweep.py
+evidence_class: measured
+description: 'Pivot Phase 0 (char): 3-point LR grid, seed 0 only.'
+seed: 0
+arms_file: configs/arms.yaml
+arms:
+- muon
+- adamw
+- adam_rms
+- spec_adamscale
+- polar
+- randspec
+- kaon
+- freon23
+- freon34
+- sign_h
+- rows_h
+lr:
+  muon: &id001
+  - 0.00333333
+  - 0.01
+  - 0.03
+  adamw: *id001
+  adam_rms: *id001
+  spec_adamscale: *id001
+  polar: *id001
+  randspec: *id001
+  kaon: *id001
+  freon23: *id001
+  freon34: *id001
+  sign_h: *id001
+  rows_h: *id001
+seeds:
+- 0
+workers: 4
+train:
+  model:
+    d: 128
+    n_layer: 4
+    n_head: 4
+    ctx: 128
+  batch_size: 16
+  steps: 600
+  warmup: 60
+  min_lr_frac: 0.1
+  eval_every: 100
+  eval_batches: 8
+  threads: 1

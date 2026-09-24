@@ -21,6 +21,17 @@ arms:
   randpart:   {family: adam, rules: {attn: spectral_randgroup, mlp: spectral, default: adam}}  # H4 control: random groups, head-sized
   scion:      {family: adam, rules: {hidden: spectral, embed: rows, pos: rows, head: sign, default: adam}}  # Scion Rec. 3.1 (ColNorm in, Sign out)
 
+  # --- pivot Phase 0: shape vs scale on hidden weights (rest adam); all LMO-type rules at RMS 0.2 ---
+  adam_rms:   {family: adam, rules: {hidden: adam_rms, default: adam}}        # Adam shape, Muon per-block scale
+  spec_adamscale: {family: adam, rules: {hidden: spec_adamscale, default: adam}}  # Muon shape, Adam-like per-block scale
+  polar:      {family: adam, rules: {hidden: polar_svd, default: adam}}       # exact UV^T (no Newton-Schulz error)
+  randspec:   {family: adam, rules: {hidden: randspec, default: adam}}        # U diag(Uniform(0,1)) V^T, fresh each step
+  kaon:       {family: adam, rules: {hidden: kaon, default: adam}}            # Kaon chaotic spectrum (arXiv:2605.11181)
+  freon23:    {family: adam, rules: {hidden: freon23, default: adam}}         # S^(-1/3) (Schatten quasi-norm, c=2/3)
+  freon34:    {family: adam, rules: {hidden: freon34, default: adam}}         # S^(-1/2) (c=3/4)
+  sign_h:     {family: adam, rules: {hidden: sign, default: adam}}            # sign on hidden only
+  rows_h:     {family: adam, rules: {hidden: rows, default: adam}}            # row-norm on hidden only
+
 lr_grids:   # Stage-2 (tiny) grids: 5 points per family, x~3.16 spacing
   adam: [0.001, 0.003, 0.01, 0.03, 0.1]
   lion: [0.0001, 0.0003, 0.001, 0.003, 0.01]

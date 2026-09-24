@@ -64,8 +64,11 @@ def train_rl(cfg, run_dir: Path | None = None, start: dict | None = None, switch
             ev = evaluate(ppo, s["params"])
             hist.append({"step": u + 1, "train_loss": -float(np.nanmean(rets[-cfg["eval_every"]:])), "val_loss": ev["val"],
                          "lr": float(ppo.lr_at(cfg["lr"], u)), "wall_s": round(time.time() - t0, 2)})
+    if not hist:  # zero-update rollout: the checkpoint's own return
+        hist.append({"step": u0, "train_loss": float("nan"), "val_loss": evaluate(ppo, s["params"])["val"], "lr": 0.0, "wall_s": 0.0})
+    final = evaluate(ppo, s["params"])
     return {"history": hist, "diverged": False, "final_val": hist[-1]["val_loss"], "final_train": hist[-1]["train_loss"],
-            "wall_s": round(time.time() - t0, 2), "state": s}
+            "wall_s": round(time.time() - t0, 2), "state": s, "final_metrics": {"return": final["return"], "unfinished": final["unfinished"]}}
 
 
 def load_ckpt(path):

@@ -1,0 +1,47 @@
+experiment_id: exp610_p2_ssl_tuning
+entry: experiments/09_paradigms/task_sweep.py
+evidence_class: measured
+description: 'Pivot Phase 2 (ssl): 3-point LR grid, seed 0.'
+seed: 0
+arms_file: configs/arms.yaml
+arms:
+- muon
+- adamw
+- adam_rms
+- randspec
+- ssl_enc_muon
+- ssl_proj_muon
+lr:
+  muon:
+  - 0.001
+  - 0.003
+  - 0.01
+  adamw:
+  - 0.001
+  - 0.003
+  - 0.01
+  adam_rms:
+  - 0.001
+  - 0.003
+  - 0.01
+  randspec:
+  - 0.001
+  - 0.003
+  - 0.01
+  ssl_enc_muon:
+  - 0.001
+  - 0.003
+  - 0.01
+  ssl_proj_muon:
+  - 0.001
+  - 0.003
+  - 0.01
+seeds:
+- 0
+workers: 4
+train:
+  task: ssl
+  steps: 1000
+  warmup: 100
+  min_lr_frac: 0.1
+  eval_every: 250

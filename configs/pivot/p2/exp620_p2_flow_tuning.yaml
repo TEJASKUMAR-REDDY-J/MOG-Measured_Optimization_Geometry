@@ -1,0 +1,37 @@
+experiment_id: exp620_p2_flow_tuning
+entry: experiments/09_paradigms/task_sweep.py
+evidence_class: measured
+description: 'Pivot Phase 2 (flow): 3-point LR grid, seed 0.'
+seed: 0
+arms_file: configs/arms.yaml
+arms:
+- muon
+- adamw
+- adam_rms
+- randspec
+lr:
+  muon:
+  - 0.001
+  - 0.003
+  - 0.01
+  adamw:
+  - 0.001
+  - 0.003
+  - 0.01
+  adam_rms:
+  - 0.001
+  - 0.003
+  - 0.01
+  randspec:
+  - 0.001
+  - 0.003
+  - 0.01
+seeds:
+- 0
+workers: 4
+train:
+  task: flow
+  steps: 3000
+  warmup: 200
+  min_lr_frac: 0.1
+  eval_every: 500

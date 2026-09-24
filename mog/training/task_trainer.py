@@ -72,9 +72,11 @@ def train_task(cfg: dict, run_dir: Path | None = None, start: dict | None = None
             hist.append({"step": step + 1, "train_loss": run_loss / n_loss, "val_loss": ev["val"],
                          "lr": lr_at(step, cfg), "wall_s": round(time.time() - t0, 2)} | {f"ev_{k}": v for k, v in ev.items() if k != "val"})
             run_loss, n_loss = 0.0, 0
+    if not hist and not diverged:  # zero-step rollout: the checkpoint's own loss
+        hist.append({"step": s0, "train_loss": float("nan"), "val_loss": task.evaluate(model)["val"], "lr": 0.0, "wall_s": 0.0})
     out = {"history": hist, "diverged": diverged, "wall_s": round(time.time() - t0, 2), "model": model, "opt": opt, "blocks": bl,
            "final_val": float("inf") if diverged else hist[-1]["val_loss"],
            "final_train": float("inf") if diverged else hist[-1]["train_loss"]}
-    if final_extra and not diverged and cfg["task"] == "ssl":
-        out["final_metrics"] = task.evaluate(model, probe=True)
+    if final_extra and not diverged:
+        out["final_metrics"] = task.evaluate(model, **({"probe": True} if cfg["task"] == "ssl" else {}))
     return out

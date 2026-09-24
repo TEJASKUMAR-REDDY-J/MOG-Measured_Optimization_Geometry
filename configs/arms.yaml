@@ -32,6 +32,10 @@ arms:
   sign_h:     {family: adam, rules: {hidden: sign, default: adam}}            # sign on hidden only
   rows_h:     {family: adam, rules: {hidden: rows, default: adam}}            # row-norm on hidden only
 
+  # --- pivot Phase 2: SSL 2x2 {encoder, projector} x {adam, spectral} (proposal H6) ---
+  ssl_enc_muon:  {family: adam, rules: {conv: spectral, fc: spectral, default: adam}}   # trunk hidden spectral, projector adam
+  ssl_proj_muon: {family: adam, rules: {proj: spectral, default: adam}}                 # projector hidden spectral, trunk adam
+
 lr_grids:   # Stage-2 (tiny) grids: 5 points per family, x~3.16 spacing
   adam: [0.001, 0.003, 0.01, 0.03, 0.1]
   lion: [0.0001, 0.0003, 0.001, 0.003, 0.01]

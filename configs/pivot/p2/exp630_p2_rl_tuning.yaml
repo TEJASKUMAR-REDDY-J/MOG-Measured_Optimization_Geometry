@@ -1,0 +1,37 @@
+experiment_id: exp630_p2_rl_tuning
+entry: experiments/09_paradigms/task_sweep.py
+evidence_class: measured
+description: 'Pivot Phase 2 (rl): 3-point LR grid, seed 0.'
+seed: 0
+arms_file: configs/arms.yaml
+arms:
+- muon
+- adamw
+- adam_rms
+- randspec
+lr:
+  muon:
+  - 0.0003
+  - 0.001
+  - 0.003
+  adamw:
+  - 0.0003
+  - 0.001
+  - 0.003
+  adam_rms:
+  - 0.0003
+  - 0.001
+  - 0.003
+  randspec:
+  - 0.0003
+  - 0.001
+  - 0.003
+seeds:
+- 0
+workers: 4
+train:
+  task: rl
+  env: Breakout-MinAtar
+  total_steps: 1048576
+  eval_every: 32
+  checkpoints: []

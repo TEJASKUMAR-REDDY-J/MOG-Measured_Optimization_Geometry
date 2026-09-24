@@ -1,0 +1,15 @@
+experiment_id: exp507_p0_lm_block_oracle
+entry: experiments/09_paradigms/oracle_tasks.py
+evidence_class: measured
+description: 'LM single-block paired oracle from both incumbents on two streams (H1 labels; same protocol as the Phase 2 paradigms).'
+seed: 4
+sources:
+  muon: latest:exp400_h2prime_ckpts
+  adamw: latest:exp504_p0_adamw_ckpts
+checkpoints: [100, 300, 500]
+candidates: [spectral, adam_rms, adam, sign, randspec]
+groups: {}
+class_units: {horizons: [20], data_seeds: [901, 902]}
+block_units: {sources: [muon, adamw], horizons: [20], data_seeds: [901, 902]}
+contrasts: [[spectral, adam_rms], [spectral, randspec], [spectral, sign], [spectral, adam], [adam_rms, adam]]
+workers: 4

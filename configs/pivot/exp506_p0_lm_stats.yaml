@@ -1,0 +1,12 @@
+experiment_id: exp506_p0_lm_stats
+entry: experiments/09_paradigms/block_stats.py
+evidence_class: measured
+description: 'Block statistics (H1 predictors) on the LM oracle checkpoints: muon incumbent (exp400) and adamw incumbent (exp504), seed 4.'
+seed: 4
+sources:
+  muon: latest:exp400_h2prime_ckpts
+  adamw: latest:exp504_p0_adamw_ckpts
+checkpoints: [100, 300, 500]
+K: 16
+probe_seed: 5151
+workers: 4

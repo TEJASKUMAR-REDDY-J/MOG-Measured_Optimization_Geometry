@@ -1,0 +1,12 @@
+experiment_id: exp640_p2_h1_lopo
+entry: experiments/09_paradigms/h1_lopo.py
+evidence_class: measured
+description: 'Proposal H1 (sufficiency): leave-one-paradigm-out prediction of per-block shape benefit from block statistics (analysis of exp507/exp506 and exp6x4/exp6x5).'
+seed: 0
+ridge_alpha: 1.0
+paradigms:
+  lm: {oracle: [latest:exp507_p0_lm_block_oracle], stats: [latest:exp506_p0_lm_stats]}
+  supervised: {oracle: [latest:exp604_p2_sup_oracle], stats: [latest:exp605_p2_sup_stats]}
+  ssl: {oracle: [latest:exp614_p2_ssl_oracle], stats: [latest:exp615_p2_ssl_stats]}
+  flow: {oracle: [latest:exp624_p2_flow_oracle], stats: [latest:exp625_p2_flow_stats]}
+  rl: {oracle: [latest:exp634_p2_rl_oracle], stats: [latest:exp635_p2_rl_stats]}

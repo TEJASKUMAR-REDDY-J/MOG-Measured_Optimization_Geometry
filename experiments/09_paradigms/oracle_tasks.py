@@ -69,6 +69,8 @@ def main(cfg: dict, run_dir: Path) -> dict:
             path = ckpt_file(src, s)
             ck = _load(path)
             meta, rules = blocks_meta(ck), incumbent_rules(ck)
+            jobs.append(({"source": sname, "ckpt": s, "unit_type": "L0", "unit": "-", "role": "-", "horizon": 0,
+                          "data_seed": 0, "rule": "incumbent"}, path, {}, 0, 0))
             units = [("class", g, select(meta, sel)) for g, sel in cfg["groups"].items()]
             if sname in cfg["block_units"]["sources"]:
                 units += [("block", n, [n]) for n, m in meta.items() if m["role"] != "gain"]
@@ -98,9 +100,14 @@ def main(cfg: dict, run_dir: Path) -> dict:
             if (i + 1) % 50 == 0:
                 print(f"  {i + 1}/{len(uniq)}", flush=True)
     base = {(m["source"], m["ckpt"], m["horizon"], m["data_seed"]): L for (m, *_), L in zip(uniq, losses) if m["unit_type"] == "base"}
-    rows = [m | {"loss": L, "base_loss": base[(m["source"], m["ckpt"], m["horizon"], m["data_seed"])],
-                 "gain": base[(m["source"], m["ckpt"], m["horizon"], m["data_seed"])] - L}
-            for (m, *_), L in zip(uniq, losses) if m["unit_type"] != "base"]
+    L0 = {(m["source"], m["ckpt"]): L for (m, *_), L in zip(uniq, losses) if m["unit_type"] == "L0"}
+    rows = []
+    for (m, *_), L in zip(uniq, losses):
+        if m["unit_type"] in ("base", "L0"):
+            continue
+        b, l0 = base[(m["source"], m["ckpt"], m["horizon"], m["data_seed"])], L0[(m["source"], m["ckpt"])]
+        # rel_gain: gain as a fraction of the incumbent's own progress over the same h steps
+        rows.append(m | {"loss": L, "base_loss": b, "L0": l0, "gain": b - L, "rel_gain": (b - L) / (l0 - b) if l0 != b else float("nan")})
     with open(run_dir / "oracle_units.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0]))
         w.writeheader()

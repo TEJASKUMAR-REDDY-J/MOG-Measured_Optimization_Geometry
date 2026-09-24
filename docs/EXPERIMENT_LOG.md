@@ -242,3 +242,54 @@ These check the cross-paradigm document's closed-form claims and validate the ne
 | T6 | Split-batch alignment is unbiased | Mean within 0.02 of the true cosine, for spectral/sign/rows at SNR 0.3/1/3 |
 | T7 | `coupling_exponent` recovers a planted p ∈ {0, ¼, ½} | Within 0.02 |
 | T8 | Power figures | MDE 2.02 and 2.83 SD (±0.05); TOST n of 69 and 18 (±1) |
+
+## Pivot Phase 2 pre-registration: four paradigms (written 2026-09-24, before any Phase 2 run)
+Paradigms: CPU scale, all data local, no downloads.
+
+| Tag | Task | Budget |
+|---|---|---|
+| sup | Supervised CNN on FashionMNIST: conv 16/32/32 + fc 128 + head | 1500 steps × 128 |
+| ssl | SimCLR NT-Xent on the same trunk + 2-layer projector; shift/flip/noise augmentation | 1000 steps × 128 |
+| flow | Rectified-flow velocity MLP (width 256) on FashionMNIST | 3000 steps × 128 |
+| rl | PPO on MinAtar Breakout (gymnax, JAX): separate actor/critic MLPs, width 256 | 2²⁰ env steps |
+
+The LM from Phase 0 is the fifth paradigm. Block roles:
+- hidden: interior matrices and conv kernels. Conv kernels are updated as out × (in·k·k).
+- boundary: input and output layers.
+- gain: biases (always adam).
+
+Arms: muon, adamw, adam_rms and randspec (hidden rule changed, rest adam). SSL adds ssl_enc_muon and ssl_proj_muon (H6 2×2).
+
+Protocol:
+- LR grid {1e-3, 3e-3, 1e-2} (RL {3e-4, 1e-3, 3e-3}) on seed 0, plus the edge rule. Evaluation seeds 1–5.
+- Oracle checkpoints come from fresh seed 6 (muon and adamw incumbents) at about 25/50/83% of training.
+
+### X-H2 per paradigm (exp6x0–6x2)
+Same contrasts and readings (a)–(d) as Phase 0.
+- The metric is each task's held-out loss. For RL it is −(mean first-episode return over 512 envs, fixed key).
+- The TOST margin δ_P is 10% of |mean(adamw) − mean(muon)| in that paradigm. A shape effect smaller than a tenth of the full optimizer gap counts as negligible.
+
+### Effect-size survey (exp6x3–6x4, and exp507 for LM)
+Paired unit oracle from both incumbents on streams 901/902, with candidates {spectral, polar_svd, randspec, adam_rms, adam, sign, rows}.
+- Units: role classes (plus actor/critic for RL, encoder/projector for SSL) at h ∈ {20, 100} steps (RL {2, 8} updates), and every single block at h = 20 (RL 2).
+- Gains are reported absolute and as rel_gain: gain ÷ the incumbent's own progress over the same h.
+
+### H1 sufficiency (exp6x5 statistics, exp640 analysis)
+The analysis code (`experiments/09_paradigms/h1_lopo.py`) is committed before any Phase 2 data exists.
+
+**Label:** rel_gain(spectral) − rel_gain(adam_rms) per (paradigm, source, checkpoint, block), averaged over the two streams.
+
+**Gate:** the label's 901-vs-902 Spearman must be ≥ 0.3. Otherwise H1 is NOT TESTABLE, because the labels are noise.
+
+**Test:** ridge regression on the statistic vector, leave-one-paradigm-out.
+- SUPPORTED: median held-out ρ ≥ 0.5 and paradigm dummies not significant (F-test p ≥ 0.05).
+- FALSIFIED: median ρ ≤ 0.3, or dummies significant.
+- INCONCLUSIVE: anything else.
+
+**Theory check:** does crit = κ∞·r_eff/n > 2/π predict gain(spectral) > gain(sign) better than the majority baseline?
+
+### Mechanism readouts from the same runs (the proposal's predictions, stated in advance)
+- **H5 (actor–critic):** critic.h has a lower gradient nuclear rank (nuc_rank_g) than actor.h at every checkpoint, and spectral − adam single-block gain on critic blocks is ≤ that on actor blocks.
+- **H6 (SSL):** the projector-geometry effect (ssl_proj_muon − adamw) exceeds the encoder-geometry effect (ssl_enc_muon − adamw) on probe accuracy. It is falsified if the encoder effect is ≥ the projector effect.
+  - Reported alongside: RankMe per arm.
+- **H7 (flow):** muon's per-t-bin advantage over adamw grows with t, i.e. shrinks with noise level σ. Test: sign of the Spearman ρ over 8 bins of the seed-averaged advantage.

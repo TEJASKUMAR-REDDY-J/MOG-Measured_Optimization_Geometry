@@ -1,0 +1,29 @@
+experiment_id: exp431_h4_randpart
+entry: experiments/sweep.py
+evidence_class: measured
+description: H4 control at its tuned LR, seeds 1-3; compared pairwise with exp160
+  headmuon and muon.
+seed: 1
+arms_file: configs/arms.yaml
+arms:
+- randpart
+lr:
+  randpart:
+  - 0.01
+seeds:
+- 1
+- 2
+- 3
+train:
+  model:
+    d: 128
+    n_layer: 4
+    n_head: 4
+    ctx: 128
+  batch_size: 16
+  steps: 600
+  warmup: 60
+  min_lr_frac: 0.1
+  eval_every: 100
+  eval_batches: 8
+  threads: 4

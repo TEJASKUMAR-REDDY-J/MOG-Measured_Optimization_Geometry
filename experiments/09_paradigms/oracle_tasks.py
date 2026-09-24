@@ -106,8 +106,8 @@ def main(cfg: dict, run_dir: Path) -> dict:
         if m["unit_type"] in ("base", "L0"):
             continue
         b, l0 = base[(m["source"], m["ckpt"], m["horizon"], m["data_seed"])], L0[(m["source"], m["ckpt"])]
-        # rel_gain: gain as a fraction of the incumbent's own progress over the same h steps
-        rows.append(m | {"loss": L, "base_loss": b, "L0": l0, "gain": b - L, "rel_gain": (b - L) / (l0 - b) if l0 != b else float("nan")})
+        # rel_gain (descriptive): gain relative to the size of the incumbent's own loss change over the same h steps
+        rows.append(m | {"loss": L, "base_loss": b, "L0": l0, "gain": b - L, "rel_gain": (b - L) / abs(l0 - b) if l0 != b else float("nan")})
     with open(run_dir / "oracle_units.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0]))
         w.writeheader()

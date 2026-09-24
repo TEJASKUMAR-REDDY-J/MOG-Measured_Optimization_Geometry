@@ -293,3 +293,5 @@ The analysis code (`experiments/09_paradigms/h1_lopo.py`) is committed before an
 - **H6 (SSL):** the projector-geometry effect (ssl_proj_muon − adamw) exceeds the encoder-geometry effect (ssl_enc_muon − adamw) on probe accuracy. It is falsified if the encoder effect is ≥ the projector effect.
   - Reported alongside: RankMe per arm.
 - **H7 (flow):** muon's per-t-bin advantage over adamw grows with t, i.e. shrinks with noise level σ. Test: sign of the Spearman ρ over 8 bins of the seed-averaged advantage.
+
+**Amendment to the Phase 2 pre-registration (2026-09-24, before any Phase 2 data).** The smoke test showed that `rel_gain` = gain ÷ (L0 − L_incumbent) changes sign whenever the incumbent's loss rises over the h steps. H1 labels therefore use raw gains, converted to within-paradigm percentile ranks per data stream. That makes them scale-free across paradigms without a sign-unstable denominator. The reliability gate and the thresholds are unchanged, and `rel_gain` stays in the oracle CSV as a descriptive column using |L0 − L_incumbent|.

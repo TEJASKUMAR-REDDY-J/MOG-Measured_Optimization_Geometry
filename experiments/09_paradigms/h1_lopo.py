@@ -2,12 +2,15 @@
 benefit across paradigms? Analysis only; reads oracle (block units) and block-statistics runs.
 Written and committed before any Phase 2 data existed (docs/EXPERIMENT_LOG.md, "Pivot Phase 2").
 
-Label per (paradigm, source, checkpoint, block), dimensionless:
-    y = rel_gain(spectral) - rel_gain(adam_rms)   (shape effect at matched per-block scale)
-rel_gain = gain / incumbent's own progress over the same h steps (oracle_tasks.py), averaged over
-the two data streams. Secondary labels: spectral - sign, spectral - adam.
+Label per (paradigm, source, checkpoint, block):
+    y = gain(spectral) - gain(adam_rms)   (shape effect at matched per-block scale)
+converted to within-paradigm percentile ranks per data stream (scale-free across paradigms whose
+losses differ), then averaged over the two streams. Secondary labels: spectral - sign, spectral - adam.
+(Amended 2026-09-24 before any Phase 2 data: the first version used rel_gain = gain / incumbent
+progress, whose denominator changes sign when the incumbent regresses -- found in the smoke test.)
 
-Gate (label reliability): Spearman of y between streams 901 and 902, pooled over paradigms.
+Gate (label reliability): Spearman of the within-paradigm percentile labels between streams 901
+and 902, pooled over paradigms.
     < 0.3 -> labels are noise; H1 NOT TESTABLE (reported, no fit).
 Test: ridge regression on standardized statistics, leave-one-paradigm-out.
     SUPPORTED   median held-out Spearman >= 0.5 and paradigm indicators add nothing (F-test p >= 0.05)
@@ -62,7 +65,7 @@ def load(cfg):
             for r in _read(_run(o) / "oracle_units.csv"):
                 if r["unit_type"] != "block":
                     continue
-                gain = _f(r.get("rel_gain")) if "rel_gain" in r else math.nan
+                gain = _f(r["gain"])
                 gains.setdefault((r["source"], int(r["ckpt"]), r["unit"]), {}).setdefault(int(r["data_seed"]), {})[r["rule"]] = gain
         st = {}
         for s in spec["stats"]:
@@ -84,6 +87,19 @@ def load(cfg):
                 ys[lab] = {ds: g.get(a, 0.0) - g.get(b, 0.0) for ds, g in per_stream.items()}
             data.append({"paradigm": par, "source": key[0], "ckpt": key[1], "block": key[2], "x": x, "y": ys,
                          "crit": _f(r.get("crit"))})
+    # within-paradigm percentile ranks per (label, stream); raw sign kept for the theory check
+    for r in data:
+        r["y_raw"] = {lab: dict(v) for lab, v in r["y"].items()}
+    for par in cfg["paradigms"]:
+        rows = [r for r in data if r["paradigm"] == par]
+        for lab in LABELS:
+            for ds in (901, 902):
+                have = [r for r in rows if ds in r["y"][lab] and np.isfinite(r["y"][lab][ds])]
+                if len(have) < 2:
+                    continue
+                ranks = stats.rankdata([r["y"][lab][ds] for r in have]) / len(have)
+                for r, q in zip(have, ranks):
+                    r["y"][lab][ds] = float(q)
     return data
 
 
@@ -151,8 +167,8 @@ def main(cfg: dict, run_dir: Path) -> dict:
                     "paradigm_indicator_p": p_ind, "verdict": verdict}
         out[lab] = res
     # theory check: crit > 2/pi predicts gain(spectral) > gain(sign)
-    tc = [(r["crit"] > 2 / math.pi, np.mean(list(r["y"]["vs_sign"].values())) > 0) for r in data
-          if np.isfinite(r["crit"]) and r["y"]["vs_sign"]]
+    tc = [(r["crit"] > 2 / math.pi, np.mean(list(r["y_raw"]["vs_sign"].values())) > 0) for r in data
+          if np.isfinite(r["crit"]) and r["y_raw"]["vs_sign"]]
     if tc:
         pred, truth = np.array(tc).T
         out["theory_crit_vs_sign"] = {"n": len(tc), "accuracy": float((pred == truth).mean()),

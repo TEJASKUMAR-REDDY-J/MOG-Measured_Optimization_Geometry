@@ -59,6 +59,6 @@ def unit_contrasts(rows, candidates, contrasts, group_of) -> dict:
         out[f"{src}|{grp}|h{h}"] = {
             "mean_gain": {c: float(np.mean([p[c] for p in pairs.values()])) for c in candidates},
             "contrasts": {f"{a}-{b}": paired_ci([p[a] - p[b] for p in pairs.values() if np.isfinite(p[a]) and np.isfinite(p[b])])
-                          for a, b in contrasts},
+                          for a, b in contrasts if a in candidates and b in candidates},
             "n_pairs": len(pairs)}
     return out
